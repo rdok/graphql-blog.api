@@ -1,0 +1,28 @@
+{
+  "name": "tmgb-basics",
+  "version": "1.0.0",
+  "description": "GraphQL basics from the-modern-graphql-bootcamp",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "babel-node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rdok/the-modern-graphql-bootcamp/graphql-basics"
+  },
+  "keywords": [
+    "graphql",
+    "nodejs",
+    "docker",
+    "apollo",
+    "auth",
+    "jenkins"
+  ],
+  "author": "Rizart Dokollari",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}
