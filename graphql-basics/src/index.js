@@ -1,8 +1,17 @@
-import customlLocation, { message, name, greetings} from './utilities'
-import customlLocation2 from './utilities'
-import sum, { substract } from './math'
+import { GraphQLServer } from 'graphql-yoga'
 
-console.log(message, name, customlLocation, customlLocation2, greetings('Asterdam'))
+const typeDefs = `
+    type Query {
+        hello( name: String): String!
+    }
+`
 
-console.log(sum(5, 6))
-console.log(substract(5, 6))
+const resolvers = {
+    Query: {
+        hello: (_, { name }) => `Hello ${name || 'World'}`
+    }
+}
+
+const server =  new GraphQLServer({ typeDefs, resolvers})
+
+server.start( () => console.log('Server is running on http://localhost:4000'))
