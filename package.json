@@ -5,8 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node ",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "production": "node src/index.j"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -24,10 +23,10 @@
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "nodemon": "^1.19.4"
+    "babel-preset-env": "^1.7.0"
   },
   "dependencies": {
-    "graphql-yoga": "^1.18.3"
+    "graphql-yoga": "^1.18.3",
+    "nodemon": "^1.19.4"
   }
 }

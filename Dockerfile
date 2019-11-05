@@ -11,4 +11,4 @@ COPY . /app
 
 RUN npm install --production
 
-ENTRYPOINT ["npm", "run", "production"]
+ENTRYPOINT ["npm", "run", "start"]
