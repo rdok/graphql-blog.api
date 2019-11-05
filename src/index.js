@@ -1,10 +1,12 @@
 import { GraphQLServer } from 'graphql-yoga'
+import { setupMaster } from 'cluster'
 
 const typeDefs = `
     type Query {
-        greeting: String!
+        greeting(name: String, position: String): String!
         me: User!
         post: Post!
+        add(firstNumber: Float!, secondNumber: Float!): Float!
     }
 
     type User {
@@ -38,6 +40,13 @@ const resolvers = {
                 body: 'Description Value',
                 published: true,
             }
+        },
+        greeting(parent, args, context, info) {
+            console.log(args)
+            return `Greetings ${args.name || 'Hello World'}. ${args.position} is awesome!`
+        },
+        add(_, args) {
+            return args.firstNumber + args.secondNumber
         }
     }
 }
@@ -45,4 +54,3 @@ const resolvers = {
 const server = new GraphQLServer({ typeDefs, resolvers })
 
 server.start(() => console.log('Server is running on http://localhost:4000'))
-
