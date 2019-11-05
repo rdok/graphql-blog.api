@@ -4,7 +4,7 @@
   "description": "GraphQL basics from the-modern-graphql-bootcamp",
   "main": "src/index.js",
   "scripts": {
-    "start": "babel-node src/index.js",
+    "start": "nodemon src/index.js --exec babel-node ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -23,9 +23,9 @@
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^1.19.4"
   },
   "dependencies": {
-    "graphql-yoga": "^1.18.3"
-  }
+    "graphql-yoga": "^1.18.3"  }
 }
