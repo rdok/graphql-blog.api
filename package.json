@@ -1,15 +1,18 @@
 {
-  "name": "tmgb-basics",
+  "name": "graphql-blog.api",
   "version": "1.0.0",
   "description": "GraphQL basics from the-modern-graphql-bootcamp",
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf build && mkdir build",
+    "build": "babel -d ./build ./src -s",
+    "production": "node ./build/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rdok/the-modern-graphql-bootcamp/graphql-basics"
+    "url": "https://github.com/rdok/graphql-blog.api/"
   },
   "keywords": [
     "graphql",
@@ -22,11 +25,11 @@
   "author": "Rizart Dokollari",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "nodemon": "^1.19.4"
   },
   "dependencies": {
-    "graphql-yoga": "^1.18.3",
-    "nodemon": "^1.19.4"
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "graphql-yoga": "^1.18.3"
   }
 }
