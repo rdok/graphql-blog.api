@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
 
-  api-graphql-blog.rdok.dev:
+  api.graphql-blog.rdok.dev:
     build:
       context: .
       dockerfile: Dockerfile
