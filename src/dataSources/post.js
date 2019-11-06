@@ -9,6 +9,7 @@ class Post {
 
         return data.filter((post) => {
             return post.title.toLowerCase().includes(query.toLowerCase())
+            || post.body.toLowerCase().includes(query.toLowerCase())
         })
     }
 
