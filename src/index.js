@@ -1,15 +1,16 @@
 import { GraphQLServer } from 'graphql-yoga'
 
 import { typeDefs } from './typeDefs'
-import { usersResolver } from './resolvers/users'
-import { currentUser } from './resolvers/currentUser'
-import { post } from './resolvers/post'
+import { User } from './dataSources/user'
+import { currentUserResolver } from './dataSources/currentUser'
+import { Post } from './dataSources/post'
 
 const resolvers = {
     Query: {
-        users(parent, args) { return usersResolver(args) },
-        currentUser() { return currentUser() },
-        post() { return post() },
+        users(parent, args) { return User.all(args.query) },
+        currentUser() { return currentUserResolver() },
+        post() { return Post.find(2050) },
+        posts(parent, args) { return Post.all(args.query) },
     }
 }
 

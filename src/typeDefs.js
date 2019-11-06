@@ -3,6 +3,7 @@ const typeDefs = `
         users(query: String): [ User! ] !
         currentUser: User!
         post: Post!
+        posts(query: String): [ Post! ] !
     }
 
     type User {

@@ -1,4 +1,4 @@
-let currentUser = () => {
+let currentUserResolver = () => {
     return {
         id: 2077,
         name: 'Cyberpunk',
@@ -6,4 +6,4 @@ let currentUser = () => {
     }
 }
 
-export { currentUser } 
+export { currentUserResolver } 
