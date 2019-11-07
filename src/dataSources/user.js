@@ -1,31 +1,44 @@
+const uuidv4 = require('uuid/v4')
+import { UserValidator } from '../validators/user'
+
 class User {
+    static data = []
+
     static create(attributes) {
-        return {
-            id: '1',
+        UserValidator.validateCreation(attributes)
+
+        const user = {
+            id: uuidv4(),
             name: attributes.name,
             email: attributes.email,
         }
-    }
-    static all(query) {
-        if (!query) { return data }
 
-        return data.filter((user) => {
+        User.data.push(user)
+
+        return user
+    }
+    static findByEmail(email) {
+        return User.data.find((user) => { return user.email === email })
+    }
+
+    static all(query) {
+        if (!query) { return User.data }
+
+        return User.data.filter((user) => {
             return user.name.toLowerCase().includes(query.toLowerCase())
         })
     }
 
     static find(id) {
-        return data.find((user) => { return user.id === id })
+        return User.data.find((user) => { return user.id === id })
     }
 }
 
-export { User }
-
-const data = [
+User.data = [
     {
         id: '1',
         name: 'nameValue',
-        email: 'emailValue',
+        email: 'email',
         age: 60,
         posts: ['2050']
     },
@@ -37,3 +50,5 @@ const data = [
         posts: ['2049', '2048']
     }
 ]
+
+export { User }
