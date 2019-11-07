@@ -4,6 +4,7 @@ const typeDefs = `
         currentUser: User!
         post: Post!
         posts(query: String): [ Post! ] !
+        comments: [Comment!]!
     }
 
     type User {
@@ -11,7 +12,7 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
-        posts: [Post!] 
+        posts: [Post!]
     }
 
     type Post {
@@ -20,6 +21,11 @@ const typeDefs = `
         body: String!
         published: Boolean!
         author: User!
+    }
+
+    type Comment {
+        id: ID!
+        text: String!
     }
 `
 

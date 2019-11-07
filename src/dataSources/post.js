@@ -14,10 +14,8 @@ class Post {
         return data.find((post) => { return post.id === id })
     }
 
-    static getByIds(ids){
-        console.log(data)
-        console.log(ids)
-        return data.filter((post) => { return ids.includes(post.id) })
+    static getByUserId(id){
+        return data.filter((post) => { return id === post.author })
     }
 }
 
