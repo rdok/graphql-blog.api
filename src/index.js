@@ -15,7 +15,11 @@ const resolvers = {
         comments() { return Comment.all() }
     },
     Post: { author(post) { return User.find(post.author) } },
-    User: { posts(user) { return Post.getByUserId(user.id) } }
+    User: {
+        posts(user) { return Post.getByUserId(user.id) },
+        comments(user) { return Comment.getByUserId(user.id) },
+    },
+    Comment: { author(comment) { return User.find(comment.author) } },
 }
 
 const server = new GraphQLServer({ typeDefs, resolvers })
