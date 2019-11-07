@@ -14,12 +14,18 @@ const resolvers = {
         posts(_, args) { return Post.all(args.query) },
         comments() { return Comment.all() }
     },
-    Post: { author(post) { return User.find(post.author) } },
-    User: {
-        posts(user) { return Post.getByUserId(user.id) },
-        comments(user) { return Comment.getByUserId(user.id) },
+    Post: {
+        author(post) { return User.find(post.author) },
+        comments(post) { return Comment.getByPostId(post.id) },
     },
-    Comment: { author(comment) { return User.find(comment.author) } },
+    User: {
+        posts(user) { return Post.getByAuthorId(user.id) },
+        comments(user) { return Comment.getByAuthorId(user.id) },
+    },
+    Comment: {
+        author(comment) { return User.find(comment.author) },
+        post(comment) { return Post.find(comment.post) },
+    },
 }
 
 const server = new GraphQLServer({ typeDefs, resolvers })

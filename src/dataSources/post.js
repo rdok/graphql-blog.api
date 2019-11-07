@@ -14,7 +14,7 @@ class Post {
         return data.find((post) => { return post.id === id })
     }
 
-    static getByUserId(id){
+    static getByAuthorId(id){
         return data.filter((post) => { return id === post.author })
     }
 }
