@@ -15,9 +15,8 @@ const resolvers = {
         comments() { return Comment.all() }
     },
     Mutation: {
-        createUser(_, attributes) {
-            return User.create(attributes)
-        },
+        createUser(_, attributes) { return User.create(attributes) },
+        createPost(_, attributes) { return Post.create(attributes) },
     },
     Post: {
         author(post) { return User.find(post.author) },

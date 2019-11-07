@@ -17,6 +17,7 @@ class User {
 
         return user
     }
+
     static findByEmail(email) {
         return User.data.find((user) => { return user.email === email })
     }
