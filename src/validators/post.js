@@ -3,10 +3,10 @@ import { User } from '../dataSources/user'
 
 class PostValidator {
     static validateCreation(attributes) {
-        const emailExists = User.find(attributes.author)
+        const userExists = User.find(attributes.author)
 
-        if (! emailExists) {
-            throw new Error('That user email does not exists.')
+        if (! userExists) {
+            throw new Error('That author id does not exists.')
         }
     }
 }

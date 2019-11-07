@@ -4,6 +4,9 @@ const mutation = `
         createPost(
             title: String!, body: String!, published: Boolean!, author: ID!
         ): Post!
+        createComment(
+            author: ID!, post: ID!, text: String!, author: ID!
+        ): Comment!
     }
 `
 

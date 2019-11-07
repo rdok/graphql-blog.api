@@ -17,6 +17,7 @@ const resolvers = {
     Mutation: {
         createUser(_, attributes) { return User.create(attributes) },
         createPost(_, attributes) { return Post.create(attributes) },
+        createComment(_, attributes) { return Comment.create(attributes) },
     },
     Post: {
         author(post) { return User.find(post.author) },
