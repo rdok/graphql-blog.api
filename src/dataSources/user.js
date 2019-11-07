@@ -7,11 +7,7 @@ class User {
     static create(attributes) {
         UserValidator.validateCreation(attributes)
 
-        const user = {
-            id: uuidv4(),
-            name: attributes.name,
-            email: attributes.email,
-        }
+        const user = { id: uuidv4(), ...attributes }
 
         User.data.push(user)
 

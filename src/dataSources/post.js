@@ -7,13 +7,7 @@ class Post {
     static create(attributes) {
         PostValidator.validateCreation(attributes)
 
-        const post = {
-            id: uuidv4(),
-            title: attributes.title,
-            body: attributes.body,
-            published: attributes.published,
-            author: attributes.author,
-        }
+        const post = { id: uuidv4(), ...attributes }
 
         Post.data.push(post)
 

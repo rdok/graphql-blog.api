@@ -7,12 +7,7 @@ class Comment {
     static create(attributes) {
         CommentValidator.validateCreation(attributes)
 
-        const comment = {
-            id: uuidv4(),
-            author: attributes.author,
-            post: attributes.post,
-            text: attributes.text,
-        }
+        const comment = { id: uuidv4(), ...attributes }
 
         Comment.data.push(comment)
 
