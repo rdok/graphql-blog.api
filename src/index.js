@@ -7,11 +7,13 @@ import { Post } from './dataSources/post'
 
 const resolvers = {
     Query: {
-        users(parent, args) { return User.all(args.query) },
+        users(_, args) { return User.all(args.query) },
         currentUser() { return currentUserResolver() },
         post() { return Post.find(2050) },
-        posts(parent, args) { return Post.all(args.query) },
-    }
+        posts(_, args) { return Post.all(args.query) },
+    },
+    Post: { author(post) { return User.find(post.author) } },
+    User: { posts(user) { return Post.getByIds(user.posts) } }
 }
 
 const server = new GraphQLServer({ typeDefs, resolvers })

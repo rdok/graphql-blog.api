@@ -11,6 +11,7 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
+        posts: [Post!] 
     }
 
     type Post {
@@ -18,6 +19,7 @@ const typeDefs = `
         title: String!
         body: String!
         published: Boolean!
+        author: User!
     }
 `
 
