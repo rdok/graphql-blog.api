@@ -1,12 +1,4 @@
-const typeDefs = `
-    type Query {
-        users(query: String): [ User! ] !
-        currentUser: User!
-        post: Post!
-        posts(query: String): [ Post! ] !
-        comments: [Comment!]!
-    }
-
+const custom = `
     type User {
         id: ID!
         name: String!
@@ -33,4 +25,4 @@ const typeDefs = `
     }
 `
 
-export { typeDefs }
+export { custom }

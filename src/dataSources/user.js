@@ -1,4 +1,11 @@
 class User {
+    static create(attributes) {
+        return {
+            id: '1',
+            name: attributes.name,
+            email: attributes.email,
+        }
+    }
     static all(query) {
         if (!query) { return data }
 

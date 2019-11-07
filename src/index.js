@@ -1,6 +1,6 @@
 import { GraphQLServer } from 'graphql-yoga'
 
-import { typeDefs } from './typeDefs'
+import { typeDefs } from './schema/typeDefs'
 import { User } from './dataSources/user'
 import { currentUserResolver } from './dataSources/currentUser'
 import { Post } from './dataSources/post'
@@ -13,6 +13,11 @@ const resolvers = {
         post() { return Post.find(2050) },
         posts(_, args) { return Post.all(args.query) },
         comments() { return Comment.all() }
+    },
+    Mutation: {
+        createUser(_, attributes) {
+            return User.create(attributes)
+        },
     },
     Post: {
         author(post) { return User.find(post.author) },
