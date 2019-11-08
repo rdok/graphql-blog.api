@@ -21,6 +21,17 @@ class Comment {
         return Comment.data.filter((comment) => { return authorId === comment.author })
     }
 
+    static delete(attributes) {
+        const index = Comment.findIndexOrFail(attributes.id)
+        const deletedComments = Comment.data.splice(index, 1)
+        return deletedComments[0]
+    }
+
+    static findIndexOrFail(id) {
+        const index = Comment.data.findIndex((comment) => { return comment.id === id })
+        if (index === -1) { throw new Error('That comment id is invalid.') }
+        return index
+    }
     static getByPostId(postId) {
         return Comment.data.filter((comment) => { return postId === comment.post })
     }

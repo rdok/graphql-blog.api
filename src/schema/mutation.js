@@ -3,7 +3,9 @@ const mutation = `
         createUser( input: CreateUserInput! ): User!
         deleteUser(id: ID!): User!
         createPost( input: CreatePostInput! ): Post!
+        deletePost(id: ID!): Post!
         createComment( input: CreateCommentInput! ): Comment!
+        deleteComment(id: ID!): Comment!
     }
 
     input CreateUserInput {

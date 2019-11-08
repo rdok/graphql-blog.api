@@ -50,7 +50,7 @@ class User {
 
     static findIndexOrFail(id) {
         const index = User.data.findIndex((user) => { return user.id === id })
-        if (index === '-1') { throw new Error('That user id is invalid.') }
+        if (index === -1) { throw new Error('That user id is invalid.') }
         return index
     }
 }

@@ -16,6 +16,16 @@ class Post {
         return post
     }
 
+    static delete(attributes) {
+        const postId = attributes.id
+        const index = Post.findIndexOrFail(postId)
+
+        Comment.deleteByPostId(postId)
+        const deletedPosts = Post.data.splice(index, 1)
+
+        return deletedPosts[0]
+    }
+
     static all(query) {
         if (!query) { return Post.data }
 
@@ -42,7 +52,7 @@ class Post {
             const shouldDeletePost = post.author === authorId
             if (shouldDeletePost) { Comment.deleteByPostId(post.id) }
 
-            return ! shouldDeletePost
+            return !shouldDeletePost
         })
     }
 
@@ -50,6 +60,12 @@ class Post {
         const post = Post.data.find((post) => { return post.id === id })
         if (!post) { throw new Error('That post id is invalid.') }
         return post
+    }
+
+    static findIndexOrFail(id) {
+        const index = Post.data.findIndex((post) => { return post.id === id })
+        if (index === -1) { throw new Error('That post id is invalid.') }
+        return index
     }
 }
 
