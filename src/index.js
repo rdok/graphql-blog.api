@@ -1,15 +1,22 @@
 import { GraphQLServer } from 'graphql-yoga'
-import { resolvers } from './resolvers'
 import { db } from './db'
-import { User } from './dataSources/user'
-import { Post } from './dataSources/post'
-import { Comment } from './dataSources/comment'
+import { UserAPI } from './dataSources/user'
+import { PostAPI } from './dataSources/post'
+import { CommentAPI } from './dataSources/comment'
+
+import Query from './resolvers/Query'
+import Mutation from './resolvers/Mutation'
+import Post from './resolvers/Post'
+import User from './resolvers/User'
+import Comment from './resolvers/Comment'
+
+const resolvers = { Query, Mutation, Post, User, Comment }
 
 const dataSources = () => ({
     blogAPI: () => ({
-        users: new User({ db }),
-        posts: new Post({ db }),
-        comments: new Comment({ db }),
+        users: new UserAPI({ db }),
+        posts: new PostAPI({ db }),
+        comments: new CommentAPI({ db }),
     })
 })
 

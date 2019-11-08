@@ -2,7 +2,7 @@ const uuidv4 = require('uuid/v4')
 import { Post } from './post'
 import { Comment } from './comment'
 
-class User {
+class UserAPI {
 
     constructor(args) {
         this.db = args.db
@@ -59,4 +59,4 @@ class User {
     }
 }
 
-export { User }
+export { UserAPI }

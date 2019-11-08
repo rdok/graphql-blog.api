@@ -3,7 +3,7 @@ import { CommentValidator } from '../validators/comment'
 import { User } from './user'
 import { Post } from './post'
 
-class Comment {
+class CommentAPI {
 
     constructor(args) {
         this.db = args.db
@@ -55,4 +55,4 @@ class Comment {
     }
 }
 
-export { Comment }
+export { CommentAPI }
