@@ -1,5 +1,6 @@
 import UserAPI from '../dataSources/user'
 import PostAPI from '../dataSources/post'
+import ValidationError from './validation-error'
 
 export default class CommentValidator {
     constructor(args) { this.db = args.db }
@@ -27,7 +28,7 @@ export default class CommentValidator {
         }
 
         if (errors.length > 0) {
-            throw new Error(errors)
+            throw new ValidationError(errors)
         }
     }
 }

@@ -1,7 +1,7 @@
 const users = [
-    { id: '1', name: 'nameValue', email: 'email', age: 60, posts: ['2050'] },
-    { id: '2', name: 'nameValue2', email: 'emailValue2', age: 30, posts: ['2049', '2048'] },
-    { id: '3', name: 'nameValue3', email: 'emailValue3', age: 35, posts: [] },
+    { id: '1', name: 'nameValue', email: 'email@email.com', age: 60, posts: ['2050'] },
+    { id: '2', name: 'nameValue2', email: '2email@email.com', age: 30, posts: ['2049', '2048'] },
+    { id: '3', name: 'nameValue3', email: '3email@email.com', age: 35, posts: [] },
 ]
 
 const posts = [

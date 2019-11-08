@@ -1,6 +1,7 @@
 const uuidv4 = require('uuid/v4')
 import UserAPI from './user'
 import CommentAPI from './comment'
+import UpdatePostValidator from '../validators/udpate-post'
 
 export default class PostAPI {
 
@@ -15,6 +16,17 @@ export default class PostAPI {
 
         const post = { id: uuidv4(), ...attributes }
         this.db.posts.push(post)
+
+        return post
+    }
+
+    update = (id, input) => {
+        const updatePostValidator = new UpdatePostValidator({ postAPI: this })
+        console.log(input)
+        updatePostValidator.validate(id, input)
+
+        let post = this.find(id)
+        post = Object.assign(post, input)
 
         return post
     }

@@ -1,7 +1,7 @@
 const uuidv4 = require('uuid/v4')
 import PostAPI from './post'
 import CommentAPI from './comment'
-import UserValidator from '../validators/user'
+import UpdateUserValidator from '../validators/update-user'
 
 export default class UserAPI {
 
@@ -17,9 +17,13 @@ export default class UserAPI {
         return user
     }
 
-    update = (input) => {
-        const userValidator = new UserValidator({ userAPI: this })
-        userValidator.validateUpdate(input)
+    update = (id, input) => {
+        const updateUserValidator = new UpdateUserValidator({ userAPI: this })
+        updateUserValidator.validate(id, input)
+        let user = this.find(id)
+        user = Object.assign(user, input)
+
+        return user
     }
 
     delete = (attributes) => {
