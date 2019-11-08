@@ -8,7 +8,6 @@ export default class UpdateCommentValidator {
     validate = (id, input) => {
         let errors = {}
 
-        console.log(this.commentAPI)
         if (!this.commentAPI.find(id)) {
             errors.id = [`Non existent id: '${id}'.`]
         }
