@@ -5,31 +5,63 @@ import { Comment } from './dataSources/comment'
 
 const resolvers = {
     Query: {
-        users(_, args) { return User.all(args.query) },
+        users(_, args, { dataSources }) {
+            return dataSources().blogAPI().users.all(args.query)
+        },
         currentUser() { return currentUserResolver() },
-        post() { return Post.find(2050) },
-        posts(_, args) { return Post.all(args.query) },
-        comments() { return Comment.all() }
+        post(_, __, { dataSources }) {
+            return dataSources().blogAPI().posts.find(2050)
+        },
+        posts(_, args, { dataSources }) {
+            return dataSources().blogAPI().posts.all(args.query)
+        },
+        comments(_, __, { dataSources }) {
+            return dataSources().blogAPI().comments.all()
+        }
     },
     Mutation: {
-        createUser(_, args) { return User.create(args.input) },
-        deleteUser(_, args) { return User.delete(args) },
-        createPost(_, args) { return Post.create(args.input) },
-        deletePost(_, args) { return Post.delete(args) },
-        createComment(_, args) { return Comment.create(args.input) },
-        deleteComment(_, args) { return Comment.delete(args) },
+        createUser(_, args, { dataSources }) {
+            return dataSources().blogAPI().users.create(args.input)
+        },
+        deleteUser(_, args, { dataSources }) {
+            return dataSources().blogAPI().users.delete(args)
+        },
+        createPost(_, args, { dataSources }) {
+            return dataSources().blogAPI().posts.create(args.input)
+        },
+        deletePost(_, args, { dataSources }) {
+            return dataSources().blogAPI().posts.delete(args)
+        },
+        createComment(_, args, { dataSources }) {
+            return dataSources().blogAPI().comments.create(args.input)
+        },
+        deleteComment(_, args, { dataSources }) {
+            return dataSources().blogAPI().comments.delete(args)
+        },
     },
     Post: {
-        author(post) { return User.find(post.author) },
-        comments(post) { return Comment.getByPostId(post.id) },
+        author(post, _, { dataSources }) {
+            return dataSources().blogAPI().users.find(post.author)
+        },
+        comments(post, _, { dataSources }) {
+            return dataSources().blogAPI().comments.getByPostId(post.id)
+        },
     },
     User: {
-        posts(user) { return Post.getByAuthorId(user.id) },
-        comments(user) { return Comment.getByAuthorId(user.id) },
+        posts(user, _, { dataSources }) {
+            return dataSources().blogAPI().posts.getByAuthorId(user.id)
+        },
+        comments(user, _, { dataSources }) {
+            return dataSources().blogAPI().comments.getByAuthorId(user.id)
+        },
     },
     Comment: {
-        author(comment) { return User.find(comment.author) },
-        post(comment) { return Post.find(comment.post) },
+        author(comment, _, { dataSources }) {
+            return dataSources().blogAPI().users.find(comment.author)
+        },
+        post(comment, _, { dataSources }) {
+            return dataSources().blogAPI().posts.find(comment.post)
+        },
     },
 }
 

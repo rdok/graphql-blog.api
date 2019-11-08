@@ -1,79 +1,77 @@
 const uuidv4 = require('uuid/v4')
-import { PostValidator } from '../validators/post'
 import { User } from './user'
 import { Comment } from './comment'
 
 class Post {
-    static data = []
 
-    static create(attributes) {
-        PostValidator.validateCreation(attributes)
+    constructor(args) {
+        this.db = args.db
+    }
+
+    create = (attributes) => {
+        const userQuery = new User({ db: this.db })
+        const userExists = userQuery.find(attributes.author)
+        if (!userExists) { throw new Error('That author id does not exists.') }
 
         const post = { id: uuidv4(), ...attributes }
-
-        Post.data.push(post)
+        this.db.posts.push(post)
 
         return post
     }
 
-    static delete(attributes) {
+    delete = (attributes) => {
         const postId = attributes.id
-        const index = Post.findIndexOrFail(postId)
+        const index = this.findIndexOrFail(postId)
 
-        Comment.deleteByPostId(postId)
-        const deletedPosts = Post.data.splice(index, 1)
-
+        const commentQuery = new Comment({ db: this.db })
+        commentQuery.deleteByPostId(postId)
+        const deletedPosts = this.db.posts.splice(index, 1)
         return deletedPosts[0]
     }
 
-    static all(query) {
-        if (!query) { return Post.data }
+    all = (query) => {
+        if (!query) { return this.db.posts }
 
         const valueToFind = query.toLowerCase()
 
-        return Post.data.filter((post) => {
+        return this.db.posts.filter((post) => {
             return post.title.toLowerCase().includes(valueToFind)
                 || post.body.toLowerCase().includes(valueToFind)
         })
     }
 
-    static find(postId) {
-        return Post.data.find((post) => { return post.id === postId })
+    find = (postId) => {
+        return this.db.posts.find((post) => { return post.id === postId })
     }
 
-    static getByAuthorId(authorId) {
-        return Post.data.filter((post) => { return post.author === authorId })
+    getByAuthorId = (authorId) => {
+        return this.db.posts.filter((post) => { return post.author === authorId })
     }
 
-    static deleteByAuthorId(authorId) {
-        User.findOrFail(authorId)
+    deleteByAuthorId = (authorId) => {
+        const userQuery = new User({ db: this.db })
+        const commentQuery = new Comment({ db: this.db })
+        userQuery.findOrFail(authorId)
 
-        Post.data = Post.data.filter((post) => {
+        this.db.posts = this.db.posts.filter((post) => {
             const shouldDeletePost = post.author === authorId
-            if (shouldDeletePost) { Comment.deleteByPostId(post.id) }
+            if (shouldDeletePost) { commentQuery.deleteByPostId(post.id) }
 
             return !shouldDeletePost
         })
     }
 
-    static findOrFail(id) {
-        const post = Post.data.find((post) => { return post.id === id })
+    findOrFail = (id) => {
+        const post = this.db.posts.find((post) => { return post.id === id })
         if (!post) { throw new Error('That post id is invalid.') }
         return post
     }
 
-    static findIndexOrFail(id) {
-        const index = Post.data.findIndex((post) => { return post.id === id })
+    findIndexOrFail = (id) => {
+        const index = this.db.posts.findIndex((post) => { return post.id === id })
         if (index === -1) { throw new Error('That post id is invalid.') }
         return index
     }
 }
-
-Post.data = [
-    { id: '2050', 'author': '1', title: 'NextGen2', body: 'Description Value2', published: false },
-    { id: '2049', 'author': '2', title: 'PrevGen', body: 'Description Value', published: true },
-    { id: '2048', 'author': '2', title: 'PrevGen3', body: 'Description Value3', published: true },
-    { id: '2047', 'author': '2', title: 'PrevGen3', body: 'Description Value3', published: true },
-]
 
 export { Post }
