@@ -1,6 +1,7 @@
 const uuidv4 = require('uuid/v4')
 import { PostValidator } from '../validators/post'
-import { UserValidator } from '../validators/user'
+import { User } from './user'
+import { Comment } from './comment'
 
 class Post {
     static data = []
@@ -35,15 +36,28 @@ class Post {
     }
 
     static deleteByAuthorId(authorId) {
-        UserValidator.validateDeletion(authorId)
-        Post.data = Post.data.filter(post => post.author !== authorId)
+        User.findOrFail(authorId)
+
+        Post.data = Post.data.filter((post) => {
+            const shouldDeletePost = post.author === authorId
+            if (shouldDeletePost) { Comment.deleteByPostId(post.id) }
+
+            return ! shouldDeletePost
+        })
+    }
+
+    static findOrFail(id) {
+        const post = Post.data.find((post) => { return post.id === id })
+        if (!post) { throw new Error('That post id is invalid.') }
+        return post
     }
 }
 
 Post.data = [
-    { id: '2050', 'author': '1',title: 'NextGen2', body: 'Description Value2', published: false },
+    { id: '2050', 'author': '1', title: 'NextGen2', body: 'Description Value2', published: false },
     { id: '2049', 'author': '2', title: 'PrevGen', body: 'Description Value', published: true },
     { id: '2048', 'author': '2', title: 'PrevGen3', body: 'Description Value3', published: true },
+    { id: '2047', 'author': '2', title: 'PrevGen3', body: 'Description Value3', published: true },
 ]
 
 export { Post }

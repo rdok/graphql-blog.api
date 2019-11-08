@@ -1,6 +1,7 @@
 const uuidv4 = require('uuid/v4')
 import { CommentValidator } from '../validators/comment'
-import { UserValidator } from '../validators/user'
+import { User } from './user'
+import { Post } from './post'
 
 class Comment {
     static data = []
@@ -24,10 +25,15 @@ class Comment {
         return Comment.data.filter((comment) => { return postId === comment.post })
     }
 
-    static deleteByAuthorId(authorId){
-        UserValidator.validateDeletion(authorId)
-
+    static deleteByAuthorId(authorId) {
+        User.findOrFail(authorId)
         Comment.data = Comment.data.filter(comment => comment.author !== authorId)
+    }
+
+    static deleteByPostId(postId) {
+        Post.findOrFail(postId)
+
+        Comment.data = Comment.data.filter(comment => comment.post !== postId)
     }
 }
 
@@ -37,6 +43,7 @@ Comment.data = [
     { id: '10', author: '2', post: '2049', text: 'On Earth, space begins at the Kármán line (100 km above sea level).' },
     { id: '5', author: '1', post: '2050', text: 'Space, also known as outer space, is the near-vacuum between celestial bodies.' },
     { id: '15', author: '1', post: '2050', text: 'eospace is the region of outer space near Earth. ' },
+    { id: '35', author: '3', post: '2047', text: '3eospace is the region of outer space near Earth. ' },
 ]
 
 export { Comment }

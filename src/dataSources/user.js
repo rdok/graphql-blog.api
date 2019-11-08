@@ -15,17 +15,15 @@ class User {
         return user
     }
 
-    static delete(id) {
-        UserValidator.validateDeletion(id)
+    static delete(attributes) {
+        const userId = attributes.id
+        const index = User.findIndexOrFail(userId)
 
-        const user = User.find(id)
-        const index = User.data.indexOf(user)
+        Post.deleteByAuthorId(userId)
+        Comment.deleteByAuthorId(userId)
+        const deletedUsers = User.data.splice(index, 1)
 
-        Post.deleteByAuthorId(id)
-        Comment.deleteByAuthorId(id)
-        User.data.splice(index, 1)
-
-        return user
+        return deletedUsers[0]
     }
 
     static findByEmail(email) {
@@ -43,23 +41,24 @@ class User {
     static find(id) {
         return User.data.find((user) => { return user.id === id })
     }
+
+    static findOrFail(id) {
+        const user = User.data.find((user) => { return user.id === id })
+        if (!user) { throw new Error('That user id is invalid.') }
+        return user
+    }
+
+    static findIndexOrFail(id) {
+        const index = User.data.findIndex((user) => { return user.id === id })
+        if (index === '-1') { throw new Error('That user id is invalid.') }
+        return index
+    }
 }
 
 User.data = [
-    {
-        id: '1',
-        name: 'nameValue',
-        email: 'email',
-        age: 60,
-        posts: ['2050']
-    },
-    {
-        id: '2',
-        name: 'nameValue2',
-        email: 'emailValue2',
-        age: 30,
-        posts: ['2049', '2048']
-    }
+    { id: '1', name: 'nameValue', email: 'email', age: 60, posts: ['2050'] },
+    { id: '2', name: 'nameValue2', email: 'emailValue2', age: 30, posts: ['2049', '2048'] },
+    { id: '3', name: 'nameValue3', email: 'emailValue3', age: 35, posts: [] },
 ]
 
 export { User }

@@ -16,7 +16,7 @@ const resolvers = {
     },
     Mutation: {
         createUser(_, args) { return User.create(args.input) },
-        deleteUser(_, args) { return User.delete(args.id) },
+        deleteUser(_, args) { return User.delete(args) },
         createPost(_, args) { return Post.create(args.input) },
         createComment(_, args) { return Comment.create(args.input) },
     },

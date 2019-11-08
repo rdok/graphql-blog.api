@@ -8,14 +8,6 @@ class UserValidator {
             throw new Error('Email has been taken.')
         }
     }
-
-    static validateDeletion(id) {
-        const user = User.find(id)
-
-        if (!user) {
-            throw new Error('That user id is invalid.')
-        }
-    }
 }
 
 export { UserValidator }
