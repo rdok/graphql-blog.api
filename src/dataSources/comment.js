@@ -1,5 +1,6 @@
 const uuidv4 = require('uuid/v4')
-import CommentValidator from '../validators/comment'
+import StoreCommentValidator from '../validators/comment/store'
+import UpdateCommentValidator from '../validators/comment/update'
 import UserAPI from './user'
 import PostAPI from './post'
 
@@ -10,11 +11,21 @@ class CommentAPI {
     }
 
     create = (attributes) => {
-        const validator = new CommentValidator({ db: this.db })
-        validator.validateCreation(attributes)
+        const validator = new StoreCommentValidator({ db: this.db })
+        validator.validate(attributes)
 
         const comment = { id: uuidv4(), ...attributes }
         this.db.comments.push(comment)
+
+        return comment
+    }
+
+    update = (id, input) => {
+        const validator = new UpdateCommentValidator({ commentAPI: this })
+        validator.validate(id, input)
+
+        let comment = this.find(id)
+        comment = Object.assign(comment, input)
 
         return comment
     }
@@ -53,6 +64,10 @@ class CommentAPI {
 
         this.db.comments = this.db.comments.filter(comment => comment.post !== postId)
     }
+    find = (commentId) => {
+        return this.db.comments.find((comment) => { return comment.id === commentId })
+    }
+
 }
 
 export { CommentAPI as default }

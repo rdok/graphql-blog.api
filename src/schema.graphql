@@ -31,6 +31,7 @@ type Mutation {
     updatePost( id: ID!, input: UpdatePostInput! ): Post!
     deletePost(id: ID!): Post!
     createComment( input: CreateCommentInput! ): Comment!
+    updateComment( id: ID!, input: UpdateCommentInput! ): Comment!
     deleteComment(id: ID!): Comment!
 }
 
@@ -63,6 +64,10 @@ input CreateCommentInput {
     author: ID!
     post: ID!
     text: String! 
+}
+
+input UpdateCommentInput {
+    text: String
 }
 
 type Query {

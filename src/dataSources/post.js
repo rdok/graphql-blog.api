@@ -22,7 +22,6 @@ export default class PostAPI {
 
     update = (id, input) => {
         const updatePostValidator = new UpdatePostValidator({ postAPI: this })
-        console.log(input)
         updatePostValidator.validate(id, input)
 
         let post = this.find(id)

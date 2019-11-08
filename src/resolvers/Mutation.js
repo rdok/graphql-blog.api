@@ -20,6 +20,9 @@ const Mutation = {
     createComment(_, args, { dataSources }) {
         return dataSources().blogAPI().comments.create(args.input)
     },
+    updateComment(_, { id, input }, { dataSources }) {
+        return dataSources().blogAPI().comments.update(id, input)
+    },
     deleteComment(_, args, { dataSources }) {
         return dataSources().blogAPI().comments.delete(args)
     },
