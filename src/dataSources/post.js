@@ -1,5 +1,6 @@
 const uuidv4 = require('uuid/v4')
 import { PostValidator } from '../validators/post'
+import { UserValidator } from '../validators/user'
 
 class Post {
     static data = []
@@ -25,19 +26,24 @@ class Post {
         })
     }
 
-    static find(id) {
-        return Post.data.find((post) => { return post.id === id })
+    static find(postId) {
+        return Post.data.find((post) => { return post.id === postId })
     }
 
-    static getByAuthorId(id) {
-        return Post.data.filter((post) => { return id === post.author })
+    static getByAuthorId(authorId) {
+        return Post.data.filter((post) => { return post.author === authorId })
+    }
+
+    static deleteByAuthorId(authorId) {
+        UserValidator.validateDeletion(authorId)
+        Post.data = Post.data.filter(post => post.author !== authorId)
     }
 }
 
 Post.data = [
-    { id: '2050', title: 'NextGen2', body: 'Description Value2', published: false, 'author': '1' },
-    { id: '2049', title: 'PrevGen', body: 'Description Value', published: true, 'author': '2' },
-    { id: '2048', title: 'PrevGen3', body: 'Description Value3', published: true, 'author': '2' },
+    { id: '2050', 'author': '1',title: 'NextGen2', body: 'Description Value2', published: false },
+    { id: '2049', 'author': '2', title: 'PrevGen', body: 'Description Value', published: true },
+    { id: '2048', 'author': '2', title: 'PrevGen3', body: 'Description Value3', published: true },
 ]
 
 export { Post }

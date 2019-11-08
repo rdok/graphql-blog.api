@@ -1,8 +1,9 @@
 const mutation = `
     type Mutation {
-        createUser( input: CreateUserInput ): User!
-        createPost( input: CreatePostInput ): Post!
-        createComment( input: CreateCommentInput ): Comment!
+        createUser( input: CreateUserInput! ): User!
+        deleteUser(id: ID!): User!
+        createPost( input: CreatePostInput! ): Post!
+        createComment( input: CreateCommentInput! ): Comment!
     }
 
     input CreateUserInput {

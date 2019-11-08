@@ -1,5 +1,7 @@
 const uuidv4 = require('uuid/v4')
 import { UserValidator } from '../validators/user'
+import { Post } from './post'
+import { Comment } from './comment'
 
 class User {
     static data = []
@@ -8,8 +10,20 @@ class User {
         UserValidator.validateCreation(attributes)
 
         const user = { id: uuidv4(), ...attributes }
-
         User.data.push(user)
+
+        return user
+    }
+
+    static delete(id) {
+        UserValidator.validateDeletion(id)
+
+        const user = User.find(id)
+        const index = User.data.indexOf(user)
+
+        Post.deleteByAuthorId(id)
+        Comment.deleteByAuthorId(id)
+        User.data.splice(index, 1)
 
         return user
     }
