@@ -1,6 +1,7 @@
 const uuidv4 = require('uuid/v4')
 import PostAPI from './post'
 import CommentAPI from './comment'
+import UserValidator from '../validators/user'
 
 export default class UserAPI {
 
@@ -8,12 +9,17 @@ export default class UserAPI {
         this.db = args.db
     }
 
-    create = (attributes) => {
-        const emailTaken = this.findByEmail(attributes.email)
+    create = (input) => {
+        const emailTaken = this.findByEmail(input.email)
         if (emailTaken) { throw new Error('Email has been taken.') }
-        const user = { id: uuidv4(), ...attributes }
+        const user = { id: uuidv4(), ...input }
         this.db.users.push(user)
         return user
+    }
+
+    update = (input) => {
+        const userValidator = new UserValidator({ userAPI: this })
+        userValidator.validateUpdate(input)
     }
 
     delete = (attributes) => {
@@ -48,13 +54,14 @@ export default class UserAPI {
 
     findOrFail = (id) => {
         const user = this.db.users.find((user) => { return user.id === id })
-        if (!user) { throw new Error('That user id is invalid.') }
+        if (!user) { throw new Error(`The user id '${id}' is invalid.`) }
         return user
     }
 
     findIndexOrFail = (id) => {
-        const index = this.db.users.findIndex((user) => { return user.id === id })
-        if (index === -1) { throw new Error('That user id is invalid.') }
+        const index = this.db.users
+            .findIndex((user) => { return user.id === id })
+        if (index === -1) { throw new Error(`The user id '${id}' is invalid.`) }
         return index
     }
 }

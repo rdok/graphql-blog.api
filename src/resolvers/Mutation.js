@@ -1,6 +1,9 @@
 const Mutation = {
-    createUser(_, args, { dataSources }) {
-        return dataSources().blogAPI().users.create(args.input)
+    createUser(_, { input }, { dataSources }) {
+        return dataSources().blogAPI().users.create(input)
+    },
+    updateUser(_, { input }, { dataSources }) {
+        return dataSources().blogAPI().users.update(input)
     },
     deleteUser(_, args, { dataSources }) {
         return dataSources().blogAPI().users.delete(args)

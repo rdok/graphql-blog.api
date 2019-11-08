@@ -28,12 +28,13 @@
     "nodemon": "^1.19.4"
   },
   "dependencies": {
-    "@babel/core": "^7.7.2",
     "@babel/cli": "^7.7.0",
-    "@babel/preset-env": "^7.7.1",
+    "@babel/core": "^7.7.2",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "graphql-yoga": "^1.18.3",
-    "node-uuid": "^1.4.8"
+    "node-uuid": "^1.4.8",
+    "validator": "^12.0.0"
   }
 }
