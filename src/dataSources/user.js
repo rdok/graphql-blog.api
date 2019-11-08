@@ -1,8 +1,8 @@
 const uuidv4 = require('uuid/v4')
-import { Post } from './post'
-import { Comment } from './comment'
+import PostAPI from './post'
+import CommentAPI from './comment'
 
-class UserAPI {
+export default class UserAPI {
 
     constructor(args) {
         this.db = args.db
@@ -20,9 +20,9 @@ class UserAPI {
         const userId = attributes.id
         const index = this.findIndexOrFail(userId)
 
-        const postQuery = new Post({ db: this.db })
+        const postQuery = new PostAPI({ db: this.db })
         postQuery.deleteByAuthorId(userId)
-        const commentQuery = new Comment({ db: this.db })
+        const commentQuery = new CommentAPI({ db: this.db })
         commentQuery.deleteByAuthorId(userId)
 
         const deletedUsers = this.db.users.splice(index, 1)
@@ -58,5 +58,3 @@ class UserAPI {
         return index
     }
 }
-
-export { UserAPI }

@@ -1,12 +1,12 @@
-import { User } from '../dataSources/user'
-import { Post } from '../dataSources/post'
+import UserAPI from '../dataSources/user'
+import PostAPI from '../dataSources/post'
 
-class CommentValidator {
+export default class CommentValidator {
     constructor(args) { this.db = args.db }
 
     validateCreation = (attributes) => {
-        const userQuery = new User({ db: this.db })
-        const postQuery = new Post({ db: this.db })
+        const userQuery = new UserAPI({ db: this.db })
+        const postQuery = new PostAPI({ db: this.db })
         let errors = []
 
         if (!userQuery.find(attributes.author)) {
@@ -31,5 +31,3 @@ class CommentValidator {
         }
     }
 }
-
-export { CommentValidator }

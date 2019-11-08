@@ -1,7 +1,7 @@
 const uuidv4 = require('uuid/v4')
-import { CommentValidator } from '../validators/comment'
-import { User } from './user'
-import { Post } from './post'
+import CommentValidator from '../validators/comment'
+import UserAPI from './user'
+import PostAPI from './post'
 
 class CommentAPI {
 
@@ -41,18 +41,18 @@ class CommentAPI {
     }
 
     deleteByAuthorId = (authorId) => {
-        const userQuery = new User({ db: this.db })
+        const userQuery = new UserAPI({ db: this.db })
         userQuery.findOrFail(authorId)
 
         this.db.comments = this.db.comments.filter(comment => comment.author !== authorId)
     }
 
     deleteByPostId = (postId) => {
-        const postQuery = new Post({ db: this.db })
+        const postQuery = new PostAPI({ db: this.db })
         postQuery.findOrFail(postId)
 
         this.db.comments = this.db.comments.filter(comment => comment.post !== postId)
     }
 }
 
-export { CommentAPI }
+export { CommentAPI as default }

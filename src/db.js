@@ -22,4 +22,4 @@ const comments = [
 
 const db = { users, posts, comments }
 
-export { db }
+export { db as default }

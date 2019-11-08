@@ -1,15 +1,15 @@
 const uuidv4 = require('uuid/v4')
-import { User } from './user'
-import { Comment } from './comment'
+import UserAPI from './user'
+import CommentAPI from './comment'
 
-class PostAPI {
+export default class PostAPI {
 
     constructor(args) {
         this.db = args.db
     }
 
     create = (attributes) => {
-        const userQuery = new User({ db: this.db })
+        const userQuery = new UserAPI({ db: this.db })
         const userExists = userQuery.find(attributes.author)
         if (!userExists) { throw new Error('That author id does not exists.') }
 
@@ -23,7 +23,7 @@ class PostAPI {
         const postId = attributes.id
         const index = this.findIndexOrFail(postId)
 
-        const commentQuery = new Comment({ db: this.db })
+        const commentQuery = new CommentAPI({ db: this.db })
         commentQuery.deleteByPostId(postId)
         const deletedPosts = this.db.posts.splice(index, 1)
         return deletedPosts[0]
@@ -49,8 +49,8 @@ class PostAPI {
     }
 
     deleteByAuthorId = (authorId) => {
-        const userQuery = new User({ db: this.db })
-        const commentQuery = new Comment({ db: this.db })
+        const userQuery = new UserAPI({ db: this.db })
+        const commentQuery = new CommentAPI({ db: this.db })
         userQuery.findOrFail(authorId)
 
         this.db.posts = this.db.posts.filter((post) => {
@@ -73,5 +73,3 @@ class PostAPI {
         return index
     }
 }
-
-export { PostAPI }
