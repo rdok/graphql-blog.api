@@ -13,9 +13,9 @@ pipeline {
         stage('Deploy') { 
            steps { dir('api') { ansiColor('xterm') {
               sh '''
-                     docker-compose build --pull
-                     docker-compose down --remove-orphans
-                     docker-compose up -d
+                docker-compose build --pull
+                docker-compose down --remove-orphans
+                docker-compose up -d
                '''
         } } } }
         stage('Health Check') { 

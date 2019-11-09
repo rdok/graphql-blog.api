@@ -12,16 +12,12 @@ export default class UpdateCommentValidator {
             errors.id = [`Non existent id: '${id}'.`]
         }
 
-        if ('text' in input && this.textIsEmpty(input)) {
+        if (typeof input.text !== 'string' || input.text.length === 0) {
             errors.title = [`Text cannot be empty.`]
         }
 
         if (Object.keys(errors).length > 0) {
             throw new ValidationError(errors)
         }
-    }
-
-    textIsEmpty(input) {
-        return typeof input.text !== 'string' || input.text.length === 0
     }
 }
