@@ -25,4 +25,14 @@ const server = new GraphQLServer({
     context: { dataSources }
 })
 
-server.start(() => console.log('Server is running on http://localhost:4000'))
+const options = {
+  port: process.env.VIRTUAL_PORT,
+  endpoint: '/graphql',
+  subscriptions: '/subscriptions',
+  playground: '/playground',
+}
+
+server.start( 
+    options,
+    ( { port } ) => console.log(`Server listening on port ${port}`)
+)
