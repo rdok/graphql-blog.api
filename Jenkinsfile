@@ -8,6 +8,7 @@ pipeline {
         LETSENCRYPT_HOST = 'api.graphql-blog.rdok.dev'
         LETSENCRYPT_EMAIL = credentials('rdok-email')
         DEFAULT_EMAIL = credentials('rdok-email')
+        COMPOSE_PROJECT_NAME = 'graphql-blog-api'
     }
     stages {
         stage('Deploy') { 
