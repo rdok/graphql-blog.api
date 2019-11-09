@@ -3,9 +3,9 @@ pipeline {
     triggers { cron('H H(18-19) * * *') }
     options { buildDiscarder( logRotator( numToKeepStr: '5' ) ) }
     environment {
-        VIRTUAL_HOST = 'api-graphql-blog.rdok.dev'
+        VIRTUAL_HOST = 'api.graphql-blog.rdok.dev'
         VIRTUAL_PORT = '3007'
-        LETSENCRYPT_HOST = 'api-graphql-blog.rdok.dev'
+        LETSENCRYPT_HOST = 'api.graphql-blog.rdok.dev'
         LETSENCRYPT_EMAIL = credentials('rdok-email')
         DEFAULT_EMAIL = credentials('rdok-email')
     }

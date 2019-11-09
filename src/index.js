@@ -34,5 +34,5 @@ const options = {
 
 server.start( 
     options,
-    ( { port } ) => console.log(`Server listening on port ${port}`)
+    ({ port }) => console.log(`Playground http://localhost:${port}/playground`)
 )
