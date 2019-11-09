@@ -27,12 +27,12 @@ const server = new GraphQLServer({
 
 const options = {
   port: process.env.VIRTUAL_PORT,
+  playground: '/',
   endpoint: '/graphql',
   subscriptions: '/subscriptions',
-  playground: '/playground',
 }
 
 server.start( 
     options,
-    ({ port }) => console.log(`Playground http://localhost:${port}/playground`)
+    ({ port }) => console.log(`Playground http://localhost:${port}/`)
 )
