@@ -6,9 +6,9 @@ import PostAPI from './post'
 
 class CommentAPI {
 
-    constructor({ db, pubsub }) {
+    constructor({ db, commentEvent }) {
         this.db = db
-        this.pubsub = pubsub
+        this.commentEvent = commentEvent
     }
 
     create = (attributes) => {
@@ -18,10 +18,8 @@ class CommentAPI {
         const comment = { id: uuidv4(), ...attributes }
         this.db.comments.push(comment)
 
-        this.pubsub.publish(
-            `commentCreated?postId=${attributes.post}`,
-            { commentCreated: comment }
-        )
+        this.commentEvent.publishCreated(comment)
+        //`commentCreated?postId=${attributes.post}`,
 
         return comment
     }
@@ -32,6 +30,8 @@ class CommentAPI {
 
         let comment = this.find(id)
         comment = Object.assign(comment, input)
+
+        this.commentEvent.publishUpdated(comment)
 
         return comment
     }
@@ -45,6 +45,8 @@ class CommentAPI {
     delete = (attributes) => {
         const index = this.findIndexOrFail(attributes.id)
         const [comment] = this.db.comments.splice(index, 1)
+
+        this.commentEvent.publishDeleted(comment)
 
         return comment
     }

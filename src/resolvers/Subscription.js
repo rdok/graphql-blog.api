@@ -1,9 +1,7 @@
 const Subscription = {
-    commentCreated: {
-        subscribe(_, { postId }, { pubsub, dataSources }) {
-            dataSources().blogAPI().posts.findOrFail(postId)
-
-            return pubsub.asyncIterator(`commentCreated?postId=${postId}`)
+    comment: {
+        subscribe(_, __, { commentEvent }) {
+            return commentEvent.openChannel()
         }
     },
     post: {

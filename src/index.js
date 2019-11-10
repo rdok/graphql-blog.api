@@ -13,22 +13,24 @@ import Comment from './resolvers/Comment'
 import Subscription from './resolvers/Subscription'
 
 import PostEvent from './events/post'
+import CommentEvent from './events/comment'
 
 const pubsub = new PubSub()
 const postEvent = new PostEvent({ pubsub })
+const commentEvent = new CommentEvent({ pubsub })
 
 const dataSources = () => ({
     blogAPI: () => ({
         users: new UserAPI({ db, pubsub }),
         posts: new PostAPI({ db, postEvent }),
-        comments: new CommentAPI({ db, pubsub }),
+        comments: new CommentAPI({ db, commentEvent }),
     })
 })
 
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers: { Query, Mutation, Post, User, Comment, Subscription },
-    context: { dataSources, postEvent, pubsub }
+    context: { dataSources, postEvent, commentEvent }
 })
 
 const options = {
