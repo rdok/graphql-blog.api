@@ -5,8 +5,9 @@ import UpdatePostValidator from '../validators/udpate-post'
 
 export default class PostAPI {
 
-    constructor(args) {
-        this.db = args.db
+    constructor({ db, pubsub }) {
+        this.db = db
+        this.pubsub = pubsub
     }
 
     create = (attributes) => {
@@ -16,6 +17,10 @@ export default class PostAPI {
 
         const post = { id: uuidv4(), ...attributes }
         this.db.posts.push(post)
+
+        if (post.published) {
+            this.pubsub.publish('postCreated', { postCreated: post })
+        }
 
         return post
     }
