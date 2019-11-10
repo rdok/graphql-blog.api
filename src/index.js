@@ -1,4 +1,4 @@
-import { GraphQLServer } from 'graphql-yoga'
+import { GraphQLServer, PubSub } from 'graphql-yoga'
 
 import db from './db'
 import UserAPI from './dataSources/user'
@@ -10,6 +10,7 @@ import Mutation from './resolvers/Mutation'
 import Post from './resolvers/Post'
 import User from './resolvers/User'
 import Comment from './resolvers/Comment'
+import Subscription from './resolvers/Subscription'
 
 const dataSources = () => ({
     blogAPI: () => ({
@@ -19,20 +20,22 @@ const dataSources = () => ({
     })
 })
 
+const pubsub = new PubSub()
+
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
-    resolvers: { Query, Mutation, Post, User, Comment },
-    context: { dataSources }
+    resolvers: { Query, Mutation, Post, User, Comment, Subscription },
+    context: { dataSources, pubsub }
 })
 
 const options = {
-  port: process.env.VIRTUAL_PORT,
-  playground: '/',
-  endpoint: '/graphql',
-  subscriptions: '/subscriptions',
+    port: process.env.VIRTUAL_PORT || 4000,
+    playground: '/',
+    endpoint: '/graphql',
+    subscriptions: '/subscriptions',
 }
 
-server.start( 
+server.start(
     options,
     ({ port }) => console.log(`Playground http://localhost:${port}/`)
 )
