@@ -6,11 +6,11 @@ const Subscription = {
             return pubsub.asyncIterator(`commentCreated?postId=${postId}`)
         }
     },
-    postCreated: {
-        subscribe(_, __, { pubsub }) {
-            return pubsub.asyncIterator('postCreated')
+    post: {
+        subscribe(_, __, { postEvent }) {
+            return postEvent.openChannel()
         }
-    }
+    },
 }
 
 export { Subscription as default }

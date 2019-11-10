@@ -5,9 +5,9 @@ import UpdatePostValidator from '../validators/udpate-post'
 
 export default class PostAPI {
 
-    constructor({ db, pubsub }) {
+    constructor({ db, postEvent }) {
         this.db = db
-        this.pubsub = pubsub
+        this.postEvent = postEvent
     }
 
     create = (attributes) => {
@@ -17,10 +17,7 @@ export default class PostAPI {
 
         const post = { id: uuidv4(), ...attributes }
         this.db.posts.push(post)
-
-        if (post.published) {
-            this.pubsub.publish('postCreated', { postCreated: post })
-        }
+        this.postEvent.publishCreated(post)
 
         return post
     }
@@ -31,6 +28,7 @@ export default class PostAPI {
 
         let post = this.find(id)
         post = Object.assign(post, input)
+        this.postEvent.publishUpdated(post)
 
         return post
     }
@@ -42,7 +40,11 @@ export default class PostAPI {
         const commentQuery = new CommentAPI({ db: this.db })
         commentQuery.deleteByPostId(postId)
         const deletedPosts = this.db.posts.splice(index, 1)
-        return deletedPosts[0]
+        const deletedPost = deletedPosts[0]
+
+        this.postEvent.publishDeleted(deletedPost)
+
+        return deletedPost
     }
 
     all = (query) => {

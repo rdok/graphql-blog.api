@@ -12,12 +12,15 @@ import User from './resolvers/User'
 import Comment from './resolvers/Comment'
 import Subscription from './resolvers/Subscription'
 
+import PostEvent from './events/post'
+
 const pubsub = new PubSub()
+const postEvent = new PostEvent({ pubsub })
 
 const dataSources = () => ({
     blogAPI: () => ({
         users: new UserAPI({ db, pubsub }),
-        posts: new PostAPI({ db, pubsub }),
+        posts: new PostAPI({ db, postEvent }),
         comments: new CommentAPI({ db, pubsub }),
     })
 })
@@ -25,7 +28,7 @@ const dataSources = () => ({
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers: { Query, Mutation, Post, User, Comment, Subscription },
-    context: { dataSources, pubsub }
+    context: { dataSources, postEvent, pubsub }
 })
 
 const options = {
