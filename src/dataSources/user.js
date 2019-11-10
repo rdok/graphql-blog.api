@@ -35,9 +35,9 @@ export default class UserAPI {
         const commentQuery = new CommentAPI({ db: this.db })
         commentQuery.deleteByAuthorId(userId)
 
-        const deletedUsers = this.db.users.splice(index, 1)
+        const [user] = this.db.users.splice(index, 1)
 
-        return deletedUsers[0]
+        return user
     }
 
     findByEmail = (email) => {

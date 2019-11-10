@@ -44,8 +44,9 @@ class CommentAPI {
 
     delete = (attributes) => {
         const index = this.findIndexOrFail(attributes.id)
-        const deletedComments = this.db.comments.splice(index, 1)
-        return deletedComments[0]
+        const [comment] = this.db.comments.splice(index, 1)
+
+        return comment
     }
 
     findIndexOrFail = (id) => {

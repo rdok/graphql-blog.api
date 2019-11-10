@@ -19,7 +19,6 @@ export default class PostEvent {
     }
 
     publishDeleted = (post) => {
-        if (this._shouldNotPublish(post)) { return }
         this._publish(this.deletedMutation, post)
     }
 

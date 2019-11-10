@@ -27,8 +27,17 @@ export default class PostAPI {
         updatePostValidator.validate(id, input)
 
         let post = this.find(id)
+        const originalPost = { ...post }
+
         post = Object.assign(post, input)
-        this.postEvent.publishUpdated(post)
+
+        if (originalPost.published && !post.published) {
+            this.postEvent.publishDeleted(originalPost)
+        } else if (!originalPost.published && post.published) {
+            this.postEvent.publishCreated(post)
+        } else {
+            this.postEvent.publishUpdated(post)
+        }
 
         return post
     }
@@ -39,12 +48,11 @@ export default class PostAPI {
 
         const commentQuery = new CommentAPI({ db: this.db })
         commentQuery.deleteByPostId(postId)
-        const deletedPosts = this.db.posts.splice(index, 1)
-        const deletedPost = deletedPosts[0]
 
-        this.postEvent.publishDeleted(deletedPost)
+        const [post] = this.db.posts.splice(index, 1)
+        this.postEvent.publishDeleted(post)
 
-        return deletedPost
+        return post
     }
 
     all = (query) => {
