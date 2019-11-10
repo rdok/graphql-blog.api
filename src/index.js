@@ -12,15 +12,15 @@ import User from './resolvers/User'
 import Comment from './resolvers/Comment'
 import Subscription from './resolvers/Subscription'
 
+const pubsub = new PubSub()
+
 const dataSources = () => ({
     blogAPI: () => ({
-        users: new UserAPI({ db }),
-        posts: new PostAPI({ db }),
-        comments: new CommentAPI({ db }),
+        users: new UserAPI({ db, pubsub }),
+        posts: new PostAPI({ db, pubsub }),
+        comments: new CommentAPI({ db, pubsub }),
     })
 })
-
-const pubsub = new PubSub()
 
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',

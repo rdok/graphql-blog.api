@@ -6,8 +6,9 @@ import PostAPI from './post'
 
 class CommentAPI {
 
-    constructor(args) {
-        this.db = args.db
+    constructor({ db, pubsub }) {
+        this.db = db
+        this.pubsub = pubsub
     }
 
     create = (attributes) => {
@@ -16,6 +17,11 @@ class CommentAPI {
 
         const comment = { id: uuidv4(), ...attributes }
         this.db.comments.push(comment)
+
+        this.pubsub.publish(
+            `commentCreated?postId=${attributes.post}`,
+            { commentCreated: comment }
+        )
 
         return comment
     }
@@ -64,10 +70,10 @@ class CommentAPI {
 
         this.db.comments = this.db.comments.filter(comment => comment.post !== postId)
     }
+
     find = (commentId) => {
         return this.db.comments.find((comment) => { return comment.id === commentId })
     }
-
 }
 
 export { CommentAPI as default }
