@@ -1,7 +1,7 @@
 const Subscription = {
     comment: {
-        subscribe(_, __, { commentEvent }) {
-            return commentEvent.openChannel()
+        subscribe(_, { postId }, { commentEvent }) {
+            return commentEvent.openChannel(postId)
         }
     },
     post: {

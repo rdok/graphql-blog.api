@@ -1,5 +1,5 @@
 export default class CommentEvent {
-    channel = 'comment'
+    channelPrefix = 'comment'
     createdMutation = 'CREATED'
     updatedMutation = 'UPDATED'
     deletedMutation = 'DELETED'
@@ -20,11 +20,18 @@ export default class CommentEvent {
         this._publish(this.deletedMutation, comment)
     }
 
-    openChannel = () => {
+    openChannel = (postId) => {
+        this._setChannel(postId)
         return this.pubsub.asyncIterator(this.channel)
     }
 
+    _setChannel(postId) {
+        this.channel = this.channelPrefix + `?postId=${postId}`
+    }
+
     _publish = (mutation, comment) => {
+        this._setChannel(comment.post)
+
         this.pubsub.publish(this.channel, {
             comment: {
                 mutation: mutation,
