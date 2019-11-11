@@ -1,22 +1,23 @@
 version: "3.7"
 
 services:
-
   api:
     build:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      - VIRTUAL_HOST
+      - POSTGRES_PASSWORD
       - VIRTUAL_PORT
-      - LETSENCRYPT_HOST
-      - LETSENCRYPT_EMAIL
     ports:
       - "${VIRTUAL_PORT}:${VIRTUAL_PORT}"
+  db:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD
+    volumes:
+      - db:/var/lib/postgresql/data
 
-
-networks:
-  default:
-    external:
-      name: nginx-proxy
+volumes:
+  db:

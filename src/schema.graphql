@@ -35,18 +35,22 @@ type Mutation {
     deleteComment(id: ID!): Comment!
 }
 
+enum SubscriptionMutationType {
+    CREATED UPDATED DELETED
+}
+
 type Subscription {
     post: PostSubscriptionPayload!
     comment(postId: ID!): CommentSubscriptionPayload!
 }
 
 type PostSubscriptionPayload {
-    mutation: String!
+    mutation: SubscriptionMutationType!
     data: Post!
 }
 
 type CommentSubscriptionPayload {
-    mutation: String!
+    mutation: SubscriptionMutationType!
     data: Comment!
 }
 

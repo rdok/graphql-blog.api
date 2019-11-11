@@ -9,6 +9,7 @@ pipeline {
         LETSENCRYPT_EMAIL = credentials('rdok-email')
         DEFAULT_EMAIL = credentials('rdok-email')
         COMPOSE_PROJECT_NAME = 'graphql-blog-api'
+        POSTGRES_PASSWORD = credentials('database-password')
     }
     stages {
         stage('Deploy') { 
@@ -16,7 +17,8 @@ pipeline {
               sh '''
                 docker-compose build --pull
                 docker-compose down --remove-orphans
-                docker-compose up -d
+                docker-compose -f docker-compose.yml \
+                               -f docker-compose.production.yml up -d
                '''
         } } } }
         stage('Health Check') { 
