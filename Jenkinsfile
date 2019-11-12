@@ -15,10 +15,15 @@ pipeline {
         stage('Deploy') { 
            steps { ansiColor('xterm') {
               sh '''
-                docker-compose build --pull
-                docker-compose down --remove-orphans
                 docker-compose -f docker-compose.yml \
-                               -f docker-compose.production.yml up -d
+                   -f docker-compose.production.yml \
+                   build --pull
+                docker-compose -f docker-compose.yml \
+                   -f docker-compose.production.yml \
+                   down --remove-orphans
+                docker-compose -f docker-compose.yml \
+                   -f docker-compose.production.yml \
+                   up -d
                '''
         } } }
         stage('Health Check') { 

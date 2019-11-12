@@ -17,6 +17,6 @@ services:
       - POSTGRES_PASSWORD
     volumes:
       - db:/var/lib/postgresql/data
-       
+
 volumes:
   db:
