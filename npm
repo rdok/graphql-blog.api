@@ -1,9 +1,0 @@
-#!/bin/sh
-
-docker run --rm -it \
-    --volume $(pwd):/app \
-    --workdir /app \
-    --publish 4000:4000 \
-    --user $(id -u):$(id -g) \
-    node:12-alpine \
-    npm  $@

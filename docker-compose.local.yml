@@ -2,9 +2,39 @@ version: "3.7"
 
 services:
   api:
+    image: node:12-alpine
+    working_dir: /app
     volumes:
       - ".:/app"
+      - "${DEV_NPM_CACHE}:/root/.npm"
     entrypoint:
       - npm
       - run
       - dev-server
+  db:
+    ports:
+      - "${DB_PORT}:5432"
+
+  prisma:
+    image: prismagraphql/prisma:1.34
+    restart: always
+    ports:
+      - "4466:4466"
+    environment:
+      PRISMA_CONFIG: |
+        port: 4466
+        # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+        # managementApiSecret: my-secret
+        databases:
+          default:
+            connector: postgres
+            host: host.docker.internal
+            database: postgres
+            # schema: public
+            user: postgres
+            password: "$POSTGRES_PASSWORD"
+            ssl: false
+            rawAccess: true
+            port: "$DB_PORT"
+            migrations: true
+

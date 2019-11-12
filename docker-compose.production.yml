@@ -2,6 +2,9 @@ version: "3.7"
 
 services:
   api:
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       - VIRTUAL_HOST
       - LETSENCRYPT_HOST
