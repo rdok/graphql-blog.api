@@ -7,7 +7,8 @@
     "dev-server": "nodemon src/index.js --exec babel-node --ext js,graphql",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel -d ./build ./src -s",
-    "production": "node ./build/index.js"
+    "production": "node ./build/index.js",
+    "get-schema": "graphql get-schema -p 'GraphQLBlog'"
   },
   "repository": {
     "type": "git",
@@ -33,9 +34,11 @@
     "@babel/plugin-proposal-class-properties": "^7.7.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
     "@babel/preset-env": "^7.7.1",
+    "graphql-cli": "^3.0.14",
     "graphql-yoga": "^1.18.3",
     "node-uuid": "^1.4.8",
     "prisma": "^1.34.10",
+    "prisma-binding": "^2.3.16",
     "validator": "^12.0.0"
   }
 }
