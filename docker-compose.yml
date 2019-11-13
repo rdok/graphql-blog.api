@@ -9,6 +9,9 @@ services:
       - VIRTUAL_PORT
     ports:
       - "${VIRTUAL_PORT}:${VIRTUAL_PORT}"
+    depends_on:
+      - db
+      - prisma
 
   db:
     image: postgres:12-alpine
@@ -17,6 +20,30 @@ services:
       - POSTGRES_PASSWORD
     volumes:
       - db:/var/lib/postgresql/data
+
+  prisma:
+    image: prismagraphql/prisma:1.34
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PRISMA_CONFIG: |
+        port: 4466
+        # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+        # managementApiSecret: my-secret
+        databases:
+          default:
+            connector: postgres
+            host: host.docker.internal
+            database: postgres
+            # schema: public
+            user: postgres
+            password: "$POSTGRES_PASSWORD"
+            ssl: false
+            rawAccess: true
+            port: "$DB_PORT"
+            migrations: true
+
 
 volumes:
   db:
