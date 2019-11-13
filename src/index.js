@@ -19,6 +19,8 @@ const pubsub = new PubSub()
 const postEvent = new PostEvent({ pubsub })
 const commentEvent = new CommentEvent({ pubsub })
 
+import './prisma'
+
 const dataSources = () => ({
     blogAPI: () => ({
         users: new UserAPI({ db, pubsub }),
