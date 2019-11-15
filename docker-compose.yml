@@ -38,7 +38,7 @@ services:
         databases:
           default:
             connector: postgres
-            host: db
+            host: graphql-blog-api_db_1
             database: postgres
             # schema: public
             user: postgres
