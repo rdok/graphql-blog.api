@@ -1,6 +1,6 @@
-import { GraphQLServer, PubSub } from 'graphql-yoga'
+import {GraphQLServer, PubSub} from 'graphql-yoga'
 
-import db from './db'
+import {Prisma} from 'prisma-binding'
 import UserAPI from './dataSources/user'
 import PostAPI from './dataSources/post'
 import CommentAPI from './dataSources/comment'
@@ -15,24 +15,31 @@ import Subscription from './resolvers/Subscription'
 import PostEvent from './events/post'
 import CommentEvent from './events/comment'
 
-const pubsub = new PubSub()
-const postEvent = new PostEvent({ pubsub })
-const commentEvent = new CommentEvent({ pubsub })
+import Validator from './validator/index'
 
-import './prisma'
+const pubsub = new PubSub()
+const postEvent = new PostEvent({pubsub})
+const commentEvent = new CommentEvent({pubsub})
+
+const prisma = new Prisma({
+    typeDefs: "src/generated/prisma.graphql",
+    endpoint: "http://localhost:4466"
+})
+
+const validator = new Validator({prisma});
 
 const dataSources = () => ({
     blogAPI: () => ({
-        users: new UserAPI({ db, pubsub }),
-        posts: new PostAPI({ db, postEvent }),
-        comments: new CommentAPI({ db, commentEvent }),
+        users: new UserAPI({prisma, pubsub, validator}),
+        posts: new PostAPI({prisma, postEvent}),
+        comments: new CommentAPI({prisma, commentEvent}),
     })
 })
 
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
-    resolvers: { Query, Mutation, Post, User, Comment, Subscription },
-    context: { dataSources, postEvent, commentEvent }
+    resolvers: {Query, Mutation, Post, User, Comment, Subscription},
+    context: {dataSources, postEvent, commentEvent}
 })
 
 const options = {
@@ -44,5 +51,5 @@ const options = {
 
 server.start(
     options,
-    ({ port }) => console.log(`Playground http://localhost:${port}/`)
+    ({port}) => console.log(`Playground http://localhost:${port}/`)
 )
