@@ -32,8 +32,6 @@ export default class UserAPI {
 
         await this.validator.validate({id, ...data}, {
             email: `email|unique:user,email,except,id,${id}`,
-        }).catch((error) => {
-            console.log(error)
         })
 
         return await this.prisma.mutation.updateUser({

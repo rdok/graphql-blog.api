@@ -11,12 +11,19 @@ export default class Validator {
     }
 
     /**
-     *
      * @param {{}} data
      * @param {[]} rules
      */
     validate = async (data, rules) => {
 
+        const errors = await this._generateErrors(data, rules)
+
+        if (Object.keys(errors).length > 0) {
+            throw new ValidationError(errors)
+        }
+    }
+
+    _generateErrors = async (data, rules) => {
         const validator = this
         let errors = []
 
@@ -25,6 +32,7 @@ export default class Validator {
             const validations = rule.split('|')
 
             validations.forEach(async (validation) => {
+
                 const validationParts = validation.split(':')
                 const validationMethod = validationParts[0]
                 const validationArgs = validationParts[1]
@@ -39,16 +47,18 @@ export default class Validator {
                     errors.push(error)
                 }
             })
-        });
+        })
 
-        if (Object.keys(errors).length > 0) {
-            throw new ValidationError(errors)
-        }
+        return errors
+
     }
 
     email = async (data) => {
-        return validator.isEmail(data) ?
-            null : `The selected email '${data}' is not an email.`
+        return new Promise((resolve) => {
+            resolve(validator.isEmail(data) ?
+                null : `The selected email '${data}' is not an email.`
+            )
+        });
     }
 
     unique = async (data, args) => {
