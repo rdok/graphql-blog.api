@@ -9,6 +9,9 @@ services:
       - VIRTUAL_HOST
       - LETSENCRYPT_HOST
       - LETSENCRYPT_EMAIL
+  prisma:
+    ports:
+      - "127.0.0.1:4466:4466"
 
 networks:
   default:
