@@ -41,7 +41,7 @@ services:
             password: "$POSTGRES_PASSWORD"
             ssl: false
             rawAccess: true
-            port: "5001"
+            port: "5432"
             migrations: true
 
 
