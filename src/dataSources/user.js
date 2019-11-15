@@ -1,10 +1,5 @@
-const uuidv4 = require('uuid/v4')
-import PostAPI from './post'
-import CommentAPI from './comment'
-import UpdateUserValidator from '../validator/update-user'
 import {Prisma} from "prisma-binding";
 import Validator from '../validator/index'
-import {onlyPick} from './../utilites'
 
 export default class UserAPI {
 

@@ -1,5 +1,3 @@
-import {currentUserResolver} from '../dataSources/currentUser'
-
 const Query = {
     users(_, { data }, {dataSources}, info) {
         return dataSources().blogAPI().users.all(data, info)
