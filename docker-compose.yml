@@ -38,7 +38,7 @@ services:
         databases:
           default:
             connector: postgres
-            host: host.docker.internal
+            host: db
             database: postgres
             # schema: public
             user: postgres
