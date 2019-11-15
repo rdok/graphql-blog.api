@@ -1,6 +1,6 @@
 const uuidv4 = require('uuid/v4')
-import StoreCommentValidator from '../validators/comment/store'
-import UpdateCommentValidator from '../validators/comment/update'
+import StoreCommentValidator from '../validator/comment/store'
+import UpdateCommentValidator from '../validator/comment/update'
 import UserAPI from './user'
 import PostAPI from './post'
 

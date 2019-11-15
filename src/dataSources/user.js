@@ -1,71 +1,88 @@
 const uuidv4 = require('uuid/v4')
 import PostAPI from './post'
 import CommentAPI from './comment'
-import UpdateUserValidator from '../validators/update-user'
+import UpdateUserValidator from '../validator/update-user'
+import {Prisma} from "prisma-binding";
+import Validator from '../validator/index'
+import {onlyPick} from './../utilites'
 
 export default class UserAPI {
 
-    constructor(args) {
-        this.db = args.db
+    /** @type Prisma prisma */
+    prisma
+    /** @type Validator validator */
+    validator
+
+    constructor({prisma, validator}) {
+        this.prisma = prisma
+        this.validator = validator
     }
 
-    create = (input) => {
-        const emailTaken = this.findByEmail(input.email)
-        if (emailTaken) { throw new Error('Email has been taken.') }
-        const user = { id: uuidv4(), ...input }
-        this.db.users.push(user)
-        return user
+    create = async (data, info) => {
+        const emailTaken = await this.prisma.exists.User({email: data.email})
+
+        return emailTaken ?
+            throw new Error('Email has been taken.')
+            : await this.prisma.mutation.createUser({
+                data: {...data}, info
+            })
     }
 
-    update = (id, input) => {
-        const updateUserValidator = new UpdateUserValidator({ userAPI: this })
-        updateUserValidator.validate(id, input)
-        let user = this.find(id)
-        user = Object.assign(user, input)
+    update = async (id, data, info) => {
 
-        return user
+        await this.validator.validate({id, ...data}, {
+            email: `email|unique:user,email,except,id,${id}`,
+        }).catch((error) => {
+            console.log(error)
+        })
+
+        return await this.prisma.mutation.updateUser({
+            where: {id: id},
+            data: {...data}
+        }, info)
     }
 
-    delete = (attributes) => {
-        const userId = attributes.id
-        const index = this.findIndexOrFail(userId)
+    delete = async (id, info) => {
+        const userExists = await this.prisma.exists.User({id: id})
 
-        const postQuery = new PostAPI({ db: this.db })
-        postQuery.deleteByAuthorId(userId)
-        const commentQuery = new CommentAPI({ db: this.db })
-        commentQuery.deleteByAuthorId(userId)
+        if (!userExists) {
+            throw new Error(`User id ${id} does not exists.`)
+        }
 
-        const [user] = this.db.users.splice(index, 1)
-
-        return user
+        return this.prisma.mutation.deleteUser({where: {id: id}}, info)
     }
 
-    findByEmail = (email) => {
-        return this.db.users.find((user) => { return user.email === email })
+    findByEmail = async (email, info) => {
+        const user = await this.prisma.query.user({where: {email: email}}, info)
+
+        return user === null ?
+            throw new Error(`User with ${email} does not exists.`)
+            : user
     }
 
-    all = (query) => {
-        if (!query) { return this.db.users }
+    all = (query, info) => {
+        if (!query) {
+            return this.prisma.query.users(null, info)
+        }
 
-        return this.db.users.filter((user) => {
+        return this.prisma.users.filter((user) => {
             return user.name.toLowerCase().includes(query.toLowerCase())
         })
     }
 
     find = (id) => {
-        return this.db.users.find((user) => { return user.id === id })
+        return this.prisma.users.find((user) => {
+            return user.id === id
+        })
     }
 
     findOrFail = (id) => {
-        const user = this.db.users.find((user) => { return user.id === id })
-        if (!user) { throw new Error(`The user id '${id}' is invalid.`) }
+        const user = this.prisma.users.find((user) => {
+            return user.id === id
+        })
+        if (!user) {
+            throw new Error(`The user id '${id}' is invalid.`)
+        }
         return user
-    }
-
-    findIndexOrFail = (id) => {
-        const index = this.db.users
-            .findIndex((user) => { return user.id === id })
-        if (index === -1) { throw new Error(`The user id '${id}' is invalid.`) }
-        return index
     }
 }

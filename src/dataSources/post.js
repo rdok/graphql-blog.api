@@ -1,7 +1,7 @@
 const uuidv4 = require('uuid/v4')
 import UserAPI from './user'
 import CommentAPI from './comment'
-import UpdatePostValidator from '../validators/udpate-post'
+import UpdatePostValidator from '../validator/udpate-post'
 
 export default class PostAPI {
 
