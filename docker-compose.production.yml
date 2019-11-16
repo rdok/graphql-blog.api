@@ -2,7 +2,6 @@ version: "3.7"
 
 services:
   api:
-
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,12 +9,10 @@ services:
       - VIRTUAL_HOST
       - LETSENCRYPT_HOST
       - LETSENCRYPT_EMAIL
-
-  prisma:
-    # https://github.com/prisma/prisma/issues/2692#issuecomment-446935094
-    network_mode: "host"
+    networks:
+      - frontend
 
 networks:
-  default:
+  frontend:
     external:
       name: nginx-proxy
