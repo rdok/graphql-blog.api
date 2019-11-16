@@ -15,7 +15,9 @@ pipeline {
     stages {
         stage('Deploy') { 
            steps { ansiColor('xterm') {
-              sh './docker/up.sh production'
+              sh '''#!/bin/bash
+                ./docker/up.sh production
+              '''
         } } }
         stage('Health Check') { 
             agent { label "linux" }
