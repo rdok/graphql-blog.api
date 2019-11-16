@@ -2,8 +2,9 @@ version: "3.7"
 
 services:
   api:
-    args:
-      - environment: "--production"
+    build:
+      args:
+        environment: "--production"
     environment:
       - VIRTUAL_HOST
       - LETSENCRYPT_HOST
