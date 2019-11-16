@@ -10,12 +10,12 @@ services:
     environment:
       - POSTGRES_PASSWORD
       - VIRTUAL_PORT
-      - ENV
+      - NODE_ENV
     command: sh -c "
       ./docker/wait-for-it.sh 'prisma:4466'
       && prisma deploy
       && npm run get-schema
-      && npm run ${ENV}
+      && npm run ${NODE_ENV}
       "
     ports:
       - "${VIRTUAL_PORT}:${VIRTUAL_PORT}"

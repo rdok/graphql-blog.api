@@ -7,7 +7,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 ARG environment
-RUN npm install "$environment"
+
+RUN npm install "${environment}"
 
 COPY . /app
 

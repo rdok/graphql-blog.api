@@ -1,7 +1,5 @@
 .env
 
-build/
-
 # Logs
 logs
 *.log

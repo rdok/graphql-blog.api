@@ -10,7 +10,7 @@ pipeline {
         DEFAULT_EMAIL = credentials('rdok-email')
         COMPOSE_PROJECT_NAME = 'graphql-blog-api'
         POSTGRES_PASSWORD = credentials('database-password')
-        ENV = 'production'
+        NODE_ENV = 'production'
     }
     stages {
         stage('Deploy') { 
