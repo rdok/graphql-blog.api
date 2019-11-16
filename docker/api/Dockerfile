@@ -1,13 +1,14 @@
 FROM node:12-alpine
 
+RUN yarn global add prisma
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm install --production
+ARG environment
+RUN npm install "$environment"
 
 COPY . /app
 
 RUN npm run build
-
-ENTRYPOINT ["npm", "run", "production"]

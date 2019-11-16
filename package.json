@@ -4,7 +4,7 @@
   "description": "GraphQL basics from the-modern-graphql-bootcamp",
   "main": "src/index.js",
   "scripts": {
-    "dev-server": "nodemon src/index.js --exec babel-node --ext js,graphql",
+    "dev": "nodemon src/index.js --exec babel-node --ext js,graphql",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel -d ./build ./src -s",
     "production": "node ./build/index.js",

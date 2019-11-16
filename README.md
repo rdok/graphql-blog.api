@@ -2,6 +2,10 @@
 
 Hands on GraphQL using Node.js, Prisma, auth, Apollo Client. 
 
+## Production
+$ `./docker/up production`
+
 ## Dev
+$ `./docker/up dev`
 $ `npm run get-schema`
-$ `dcker-compose -f docker-compose.yml  -f docker-compose.local.yml  up -d`
+$ `prisma deploy`

@@ -3,10 +3,20 @@ version: "3.7"
 services:
 
   api:
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
     restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD
       - VIRTUAL_PORT
+      - ENV
+    command: sh -c "
+      ./docker/wait-for-it.sh 'prisma:4466'
+      && prisma deploy
+      && npm run get-schema
+      && npm run ${ENV}
+      "
     ports:
       - "${VIRTUAL_PORT}:${VIRTUAL_PORT}"
     depends_on:

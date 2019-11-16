@@ -23,7 +23,7 @@ const commentEvent = new CommentEvent({pubsub})
 
 const prisma = new Prisma({
     typeDefs: "src/generated/prisma.graphql",
-    endpoint: "http://localhost:4466"
+    endpoint: "http://prisma:4466"
 })
 
 const validator = new Validator({prisma});

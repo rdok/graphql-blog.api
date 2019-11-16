@@ -10,21 +10,12 @@ pipeline {
         DEFAULT_EMAIL = credentials('rdok-email')
         COMPOSE_PROJECT_NAME = 'graphql-blog-api'
         POSTGRES_PASSWORD = credentials('database-password')
+        ENV = 'production'
     }
     stages {
         stage('Deploy') { 
            steps { ansiColor('xterm') {
-              sh '''
-                docker-compose -f docker-compose.yml \
-                   -f docker-compose.production.yml \
-                   build --pull
-                docker-compose -f docker-compose.yml \
-                   -f docker-compose.production.yml \
-                   down --remove-orphans
-                docker-compose -f docker-compose.yml \
-                   -f docker-compose.production.yml \
-                   up -d
-               '''
+              sh './docker/up.sh production'
         } } }
         stage('Health Check') { 
             agent { label "linux" }

@@ -2,15 +2,10 @@ version: "3.7"
 
 services:
   api:
-    image: node:12-alpine
-    working_dir: /app
     volumes:
       - ".:/app"
       - "${DEV_NPM_CACHE}:/root/.npm"
-    entrypoint:
-      - npm
-      - run
-      - dev-server
+
   db:
     ports:
       - "5432:5432"
