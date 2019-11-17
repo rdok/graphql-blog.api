@@ -64,18 +64,6 @@ export default class UserAPI {
     }
 
     find = (id, info) => {
-        return this.prisma.query.user({
-            where: {id: id}, info
-        })
-    }
-
-    findOrFail = (id) => {
-        const user = this.prisma.users.find((user) => {
-            return user.id === id
-        })
-        if (!user) {
-            throw new Error(`The user id '${id}' is invalid.`)
-        }
-        return user
+        return this.prisma.query.user({where: {id: id}, info})
     }
 }

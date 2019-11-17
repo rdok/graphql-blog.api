@@ -1,7 +1,6 @@
 import UserAPI from './user'
 import CommentAPI from './comment'
 import PostEvent from '../events/post'
-import UpdatePostValidator from '../validator/udpate-post'
 import {Prisma} from "prisma-binding";
 
 export default class PostAPI {
@@ -39,34 +38,41 @@ export default class PostAPI {
         return post
     }
 
-    update = (id, input) => {
-        const updatePostValidator = new UpdatePostValidator({postAPI: this})
-        updatePostValidator.validate(id, input)
+    update = async (id, data, info) => {
 
-        let post = this.find(id)
-        const originalPost = {...post}
+        await this.validator.validate({id, ...data}, {
+            id: 'required|exists:Post,id',
+            author: 'exists:User,id',
+            published: 'boolean',
+        })
 
-        post = Object.assign(post, input)
+        const originalPost = await this.find(id)
 
-        if (originalPost.published && !post.published) {
+        const updatedPost = await this.prisma.mutation.updatePost({
+            where: {id: id},
+            data: {...data}
+        })
+
+        if (originalPost.published && !updatedPost.published) {
             this.postEvent.publishDeleted(originalPost)
-        } else if (!originalPost.published && post.published) {
-            this.postEvent.publishCreated(post)
+        } else if (!originalPost.published && updatedPost.published) {
+            this.postEvent.publishCreated(updatedPost)
         } else {
-            this.postEvent.publishUpdated(post)
+            this.postEvent.publishUpdated(updatedPost)
         }
 
-        return post
+        return updatedPost
     }
 
-    delete = (attributes) => {
-        const postId = attributes.id
-        const index = this.findIndexOrFail(postId)
+    delete = async (id, info) => {
+        await this.validator.validate({id}, {
+            id: 'required|exists:Post,id',
+        })
 
-        const commentQuery = new CommentAPI({prisma: this.prisma})
-        commentQuery.deleteByPostId(postId)
+        let post = await this.prisma.mutation.deletePost({
+            where: {id: id}
+        }, info)
 
-        const [post] = this.prisma.posts.splice(index, 1)
         this.postEvent.publishDeleted(post)
 
         return post
@@ -76,10 +82,8 @@ export default class PostAPI {
         return this.prisma.query.posts(null, info)
     }
 
-    find = (postId) => {
-        return this.prisma.posts.find((post) => {
-            return post.id === postId
-        })
+    find = (id, info) => {
+        return this.prisma.query.post({where: {id: id}, info})
     }
 
     getByAuthorId = (authorId) => {

@@ -11,11 +11,11 @@ const Mutation = {
     createPost(_, {data}, {dataSources}, info) {
         return dataSources().blogAPI().posts.create(data, info)
     },
-    updatePost(_, {id, data}, {dataSources}) {
-        return dataSources().blogAPI().posts.update(id, data)
+    updatePost(_, {id, data}, {dataSources}, info) {
+        return dataSources().blogAPI().posts.update(id, data, info)
     },
-    deletePost(_, args, {dataSources}) {
-        return dataSources().blogAPI().posts.delete(args)
+    deletePost(_, {id}, {dataSources}, info) {
+        return dataSources().blogAPI().posts.delete(id, info)
     },
     createComment(_, args, {dataSources}) {
         return dataSources().blogAPI().comments.create(args.data)
