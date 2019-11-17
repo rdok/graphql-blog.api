@@ -5,8 +5,10 @@ services:
     volumes:
       - ".:/app"
       - "${DEV_NPM_CACHE}:/root/.npm"
-    environment:
-      - VIRTUAL_HOST
+    ports:
+      - "${VIRTUAL_PORT}:${VIRTUAL_PORT}"
+    command: tail -f /dev/null
+    working_dir: /app
 
   db:
     ports:

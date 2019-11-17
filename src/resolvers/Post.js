@@ -1,6 +1,6 @@
 const Post = {
-    author(post, _, { dataSources }) {
-        return dataSources().blogAPI().users.find(post.author)
+    author(post, _, { dataSources }, info) {
+        return dataSources().blogAPI().users.find(post.author.id, info)
     },
     comments(post, _, { dataSources }) {
         return dataSources().blogAPI().comments.getByPostId(post.id)

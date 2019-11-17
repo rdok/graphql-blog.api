@@ -23,60 +23,74 @@ export default class Validator {
         }
     }
 
-    _generateErrors = async (data, rules) => {
+    _generateErrors = async (data, fieldsRules) => {
         const validator = this
-        let errors = []
+        let errors = {}
 
-        Object.keys(rules).forEach((property, index) => {
-            const rule = rules[property]
-            const validations = rule.split('|')
+        for (const field in fieldsRules) {
+            const rules = fieldsRules[field].split('|')
 
-            validations.forEach(async (validation) => {
+            errors[field] = []
 
-                const validationParts = validation.split(':')
-                const validationMethod = validationParts[0]
-                const validationArgs = validationParts[1]
+            for (const rule of rules) {
 
-                if (typeof validator[validationMethod] !== 'function') {
-                    throw new Error(`That rule is invalid: '${validationMethod}'`)
+                const ruleParts = rule.split(':')
+
+                const method = ruleParts[0]
+                const args = ruleParts[1]
+
+                if (typeof validator[method] !== 'function') {
+                    throw new Error(`That rule is invalid: '${method}'`)
                 }
 
-                const error = await validator[validationMethod](data[property], validationArgs)
+                const error = await validator[method](data[field], args, field)
 
                 if (error !== null) {
-                    errors.push(error)
+                    errors[field].push(error)
                 }
-            })
-        })
+            }
+
+            if (errors[field].length === 0) {
+                delete errors[field]
+            }
+        }
+
 
         return errors
-
     }
 
-    email = async (data) => {
-        return new Promise((resolve) => {
-            resolve(validator.isEmail(data) ?
-                null : `The selected email '${data}' is not an email.`
-            )
-        });
+    email = (data) => {
+        return validator.isEmail(data) ?
+            null : `The selected email '${data}' is not an email.`
+    }
+
+    required = (data) => {
+        return typeof data === 'undefined'
+            ? 'This field is required.' : null
+    }
+
+    boolean = (data) => {
+        return typeof data !== 'boolean'
+            ? 'Must be of boolean type.'
+            : null
     }
 
     unique = async (data, args) => {
-        const [model, property, except, exceptProperty, value, ...undefined] = args.split(',')
+        const [model, property, except, exceptProperty, expectValue] = args.split(',')
 
         const record = await this.prisma.query[model]({
             where: {[property]: data}
         })
 
-        if (record === null) {
-            return null
+        let error = null
+
+        if (record) {
+            if (!except || record[exceptProperty] !== expectValue) {
+                error = `The selected ${property} is taken.`
+            }
         }
 
-        if (except && record[exceptProperty] === value) {
-            return null
-        }
-
-        return `The selected email is taken.`
+        return error
     }
 
     exists = async (data, args) => {
@@ -85,6 +99,6 @@ export default class Validator {
         const recordExists = await this.prisma.exists[model]({[property]: data})
 
         return recordExists ?
-            null : `The selected ${property} field's value ${data} does not exist`
+            null : `The selected value '${data}' is invalid.`
     }
 }

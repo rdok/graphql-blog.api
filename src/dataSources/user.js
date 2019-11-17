@@ -14,13 +14,13 @@ export default class UserAPI {
     }
 
     create = async (data, info) => {
-        const emailTaken = await this.prisma.exists.User({email: data.email})
+        await this.validator.validate(data, {
+            email: 'email|unique:user,email'
+        })
 
-        return emailTaken ?
-            throw new Error('Email has been taken.')
-            : await this.prisma.mutation.createUser({
-                data: {...data}, info
-            })
+        return this.prisma.mutation.createUser({
+            data: {...data}, info
+        })
     }
 
     update = async (id, data, info) => {
@@ -63,9 +63,9 @@ export default class UserAPI {
         })
     }
 
-    find = (id) => {
-        return this.prisma.users.find((user) => {
-            return user.id === id
+    find = (id, info) => {
+        return this.prisma.query.user({
+            where: {id: id}, info
         })
     }
 
