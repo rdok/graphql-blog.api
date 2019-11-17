@@ -9,7 +9,7 @@ const Query = {
         return dataSources().blogAPI().posts.find(2050)
     },
     posts(_, {data}, {dataSources}, info) {
-        return dataSources().blogAPI().posts.all(data, info)
+        return dataSources().blogAPI().posts.all(info)
     },
     comments(_, __, {dataSources}) {
         return dataSources().blogAPI().comments.all()
