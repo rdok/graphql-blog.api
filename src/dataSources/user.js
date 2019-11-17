@@ -54,13 +54,19 @@ export default class UserAPI {
     }
 
     all = (query, info) => {
-        if (!query) {
-            return this.prisma.query.users(null, info)
+
+        if (query) {
+            query = {
+                where: {
+                    OR: [
+                        {name_contains: query},
+                        {email_contains: query},
+                    ]
+                }
+            }
         }
 
-        return this.prisma.users.filter((user) => {
-            return user.name.toLowerCase().includes(query.toLowerCase())
-        })
+        return this.prisma.query.users(query, info)
     }
 
     find = (id, info) => {

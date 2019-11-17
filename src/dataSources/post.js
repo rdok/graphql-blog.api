@@ -78,8 +78,18 @@ export default class PostAPI {
         return post
     }
 
-    all = (info) => {
-        return this.prisma.query.posts(null, info)
+    all = (query, info) => {
+        if (query) {
+            query = {
+                where: {
+                    OR: [
+                        {title_contains: query},
+                        {body_contains: query},
+                    ]
+                }
+            }
+        }
+        return this.prisma.query.posts(query, info)
     }
 
     find = (id, info) => {
