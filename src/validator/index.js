@@ -23,33 +23,32 @@ export default class Validator {
         }
     }
 
-    _generateErrors = async (data, rules) => {
+    _generateErrors = async (data, fieldsRules) => {
         const validator = this
         let errors = []
 
-        await Promise.all(await Object.keys(rules).forEach(async (property, index) => {
-            const rule = rules[property]
-            const validations = rule.split('|')
+        for (const field in fieldsRules) {
+            const rules = fieldsRules[field].split('|')
 
-            for (const validation of validations) {
+            for (const rule of rules) {
 
-                const validationParts = validation.split(':')
-                const validationMethod = validationParts[0]
-                const validationArgs = validationParts[1]
+                const ruleParts = rule.split(':')
+                const method = ruleParts[0]
+                const args = ruleParts[1]
 
-                if (typeof validator[validationMethod] !== 'function') {
-                    throw new Error(`That rule is invalid: '${validationMethod}'`)
+                if (typeof validator[method] !== 'function') {
+                    throw new Error(`That rule is invalid: '${method}'`)
                 }
 
-                const error = await validator[validationMethod](data[property], validationArgs)
+                const error = await validator[method](data[field], args)
 
                 if (error !== null) {
                     errors.push(error)
                 }
             }
-        }))
+        }
 
-        return new Promise((resolve) => resolve(errors))
+        return errors
     }
 
     email = (data) => {
@@ -66,8 +65,6 @@ export default class Validator {
 
         let error = null
 
-        console.log('================================================================================')
-        console.log(record)
         if (record) {
             if (!except || record[exceptProperty] !== expectValue) {
                 error = `The selected ${property} is taken.`

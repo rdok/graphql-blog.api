@@ -6,7 +6,7 @@ services:
       - ".:/app"
       - "${DEV_NPM_CACHE}:/root/.npm"
     ports:
-      - "4002:4002"
+      - "${VIRTUAL_PORT}:${VIRTUAL_PORT}"
     command: tail -f /dev/null
     working_dir: /app
 

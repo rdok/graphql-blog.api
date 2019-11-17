@@ -13,10 +13,9 @@ export default class UserAPI {
         this.validator = validator
     }
 
-    create = (data, info) => {
-        this.validator.validate(data, {
-            email: 'unique:user,email'
-            // email: 'email|unique:user,email'
+    create = async (data, info) => {
+        await this.validator.validate(data, {
+            email: 'email|unique:user,email'
         })
 
         return this.prisma.mutation.createUser({

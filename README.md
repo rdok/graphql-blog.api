@@ -9,6 +9,7 @@ $ `./docker/up production`
 $ `./docker/up.sh dev`
 $ `docker exec -it graphql-blog-api_api_1 sh`
 $ `npm install -g prisma`
+$ `npm install`
 $ `prisma deploy`
 $ `npm run get-schema`
 $ `npm run dev`
