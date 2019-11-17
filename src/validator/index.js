@@ -25,14 +25,17 @@ export default class Validator {
 
     _generateErrors = async (data, fieldsRules) => {
         const validator = this
-        let errors = []
+        let errors = {}
 
         for (const field in fieldsRules) {
             const rules = fieldsRules[field].split('|')
 
+            errors[field] = []
+
             for (const rule of rules) {
 
                 const ruleParts = rule.split(':')
+
                 const method = ruleParts[0]
                 const args = ruleParts[1]
 
@@ -40,13 +43,18 @@ export default class Validator {
                     throw new Error(`That rule is invalid: '${method}'`)
                 }
 
-                const error = await validator[method](data[field], args)
+                const error = await validator[method](data[field], args, field)
 
                 if (error !== null) {
-                    errors.push(error)
+                    errors[field].push(error)
                 }
             }
+
+            if (errors[field].length === 0) {
+                delete errors[field]
+            }
         }
+
 
         return errors
     }
@@ -54,6 +62,17 @@ export default class Validator {
     email = (data) => {
         return validator.isEmail(data) ?
             null : `The selected email '${data}' is not an email.`
+    }
+
+    required = (data) => {
+        return typeof data === 'undefined'
+            ? 'This field is required.' : null
+    }
+
+    boolean = (data) => {
+        return typeof data !== 'boolean'
+            ? 'Must be of boolean type.'
+            : null
     }
 
     unique = async (data, args) => {
@@ -74,12 +93,12 @@ export default class Validator {
         return error
     }
 
-    exists = (data, args) => {
+    exists = async (data, args) => {
         const [model, property] = args.split(',')
 
-        const recordExists = this.prisma.exists[model]({[property]: data})
+        const recordExists = await this.prisma.exists[model]({[property]: data})
 
         return recordExists ?
-            null : `The selected ${property} field's value ${data} does not exist`
+            null : `The selected value '${data}' is invalid.`
     }
 }

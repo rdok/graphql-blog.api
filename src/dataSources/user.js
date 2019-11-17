@@ -63,9 +63,9 @@ export default class UserAPI {
         })
     }
 
-    find = (id) => {
-        return this.prisma.users.find((user) => {
-            return user.id === id
+    find = (id, info) => {
+        return this.prisma.query.user({
+            where: {id: id}, info
         })
     }
 

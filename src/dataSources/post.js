@@ -1,30 +1,38 @@
 import UserAPI from './user'
 import CommentAPI from './comment'
+import PostEvent from '../events/post'
 import UpdatePostValidator from '../validator/udpate-post'
 import {Prisma} from "prisma-binding";
 
 export default class PostAPI {
 
-    /** @type Prisma prisma */
+    /** @type Prisma */
     prisma
-    /** @type Validator validator */
+    /** @type Validator */
     validator
+    /** @type PostEvent */
+    postEvent
 
     constructor({prisma, validator, postEvent}) {
         this.prisma = prisma
+        this.validator = validator
         this.postEvent = postEvent
     }
 
-    create = async (data) => {
+    create = async (data, info) => {
 
         await this.validator.validate(data, {
             title: 'required',
             body: 'required',
             published: 'required|boolean',
-            author: 'required|exists:user,id',
+            author: 'required|exists:User,id',
         })
 
-        const post = this.prisma.mutation.createPost(data)
+        data.author = {connect: {id: data.author}}
+
+        const post = this.prisma.mutation.createPost(
+            {data: {...data}}, info
+        )
 
         this.postEvent.publishCreated(post)
 
@@ -64,17 +72,8 @@ export default class PostAPI {
         return post
     }
 
-    all = (query) => {
-        if (!query) {
-            return this.prisma.posts
-        }
-
-        const valueToFind = query.toLowerCase()
-
-        return this.prisma.posts.filter((post) => {
-            return post.title.toLowerCase().includes(valueToFind)
-                || post.body.toLowerCase().includes(valueToFind)
-        })
+    all = (info) => {
+        return this.prisma.query.posts(null, info)
     }
 
     find = (postId) => {
