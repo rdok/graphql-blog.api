@@ -27,11 +27,11 @@ export default class Validator {
         const validator = this
         let errors = []
 
-        Object.keys(rules).forEach((property, index) => {
+        await Promise.all(await Object.keys(rules).forEach(async (property, index) => {
             const rule = rules[property]
             const validations = rule.split('|')
 
-            validations.forEach(async (validation) => {
+            for (const validation of validations) {
 
                 const validationParts = validation.split(':')
                 const validationMethod = validationParts[0]
@@ -46,43 +46,41 @@ export default class Validator {
                 if (error !== null) {
                     errors.push(error)
                 }
-            })
-        })
+            }
+        }))
 
-        return errors
-
+        return new Promise((resolve) => resolve(errors))
     }
 
-    email = async (data) => {
-        return new Promise((resolve) => {
-            resolve(validator.isEmail(data) ?
-                null : `The selected email '${data}' is not an email.`
-            )
-        });
+    email = (data) => {
+        return validator.isEmail(data) ?
+            null : `The selected email '${data}' is not an email.`
     }
 
     unique = async (data, args) => {
-        const [model, property, except, exceptProperty, value, ...undefined] = args.split(',')
+        const [model, property, except, exceptProperty, expectValue] = args.split(',')
 
         const record = await this.prisma.query[model]({
             where: {[property]: data}
         })
 
-        if (record === null) {
-            return null
+        let error = null
+
+        console.log('================================================================================')
+        console.log(record)
+        if (record) {
+            if (!except || record[exceptProperty] !== expectValue) {
+                error = `The selected ${property} is taken.`
+            }
         }
 
-        if (except && record[exceptProperty] === value) {
-            return null
-        }
-
-        return `The selected email is taken.`
+        return error
     }
 
-    exists = async (data, args) => {
+    exists = (data, args) => {
         const [model, property] = args.split(',')
 
-        const recordExists = await this.prisma.exists[model]({[property]: data})
+        const recordExists = this.prisma.exists[model]({[property]: data})
 
         return recordExists ?
             null : `The selected ${property} field's value ${data} does not exist`

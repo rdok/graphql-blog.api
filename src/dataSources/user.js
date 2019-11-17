@@ -13,14 +13,15 @@ export default class UserAPI {
         this.validator = validator
     }
 
-    create = async (data, info) => {
-        const emailTaken = await this.prisma.exists.User({email: data.email})
+    create = (data, info) => {
+        this.validator.validate(data, {
+            email: 'unique:user,email'
+            // email: 'email|unique:user,email'
+        })
 
-        return emailTaken ?
-            throw new Error('Email has been taken.')
-            : await this.prisma.mutation.createUser({
-                data: {...data}, info
-            })
+        return this.prisma.mutation.createUser({
+            data: {...data}, info
+        })
     }
 
     update = async (id, data, info) => {

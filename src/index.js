@@ -30,8 +30,8 @@ const validator = new Validator({prisma});
 
 const dataSources = () => ({
     blogAPI: () => ({
-        users: new UserAPI({prisma, pubsub, validator}),
-        posts: new PostAPI({prisma, postEvent}),
+        users: new UserAPI({prisma, validator}),
+        posts: new PostAPI({prisma, validator, postEvent}),
         comments: new CommentAPI({prisma, commentEvent}),
     })
 })

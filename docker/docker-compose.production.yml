@@ -1,14 +1,26 @@
 version: "3.7"
 
 services:
+
   api:
     build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
       args:
-        environment: "--production"
+        environment: "production"
+    restart: unless-stopped
+    command: sh -c "
+      ./docker/wait-for-it.sh 'prisma:4466'
+      && prisma deploy
+      && npm run get-schema
+      && npm run ${NODE_ENV}
+      "
     environment:
       - VIRTUAL_HOST
       - LETSENCRYPT_HOST
       - LETSENCRYPT_EMAIL
+    ports:
+      - "${VIRTUAL_PORT}"
     networks:
       - frontend
 

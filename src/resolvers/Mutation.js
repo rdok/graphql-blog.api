@@ -8,8 +8,8 @@ const Mutation = {
     deleteUser(_, {id}, {dataSources}) {
         return dataSources().blogAPI().users.delete(id)
     },
-    createPost(_, args, {dataSources}) {
-        return dataSources().blogAPI().posts.create(args.data)
+    createPost(_, {data}, {dataSources}) {
+        return dataSources().blogAPI().posts.create(data)
     },
     updatePost(_, {id, data}, {dataSources}) {
         return dataSources().blogAPI().posts.update(id, data)
