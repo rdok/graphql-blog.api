@@ -6,10 +6,9 @@ Hands on GraphQL using Node.js, Prisma, auth, Apollo Client.
 $ `./docker/up production`
 
 ## Development
+Copy .env.example to .env, and fill variables.
+
 $ `./docker/up.sh dev`
-$ `docker exec -it graphql-blog-api_api_1 sh`
-$ `npm install -g prisma`
-$ `npm install`
-$ `prisma deploy`
-$ `npm run get-schema`
-$ `npm run dev`
+
+Visit http://localhost:$VIRTUAL_PORT It takes some additional seconds, as the api docker service waits for prisma & the database to be up and running, as well as installing node depedencies.
+See `docker logs graphql-blog-api_api_1` 

@@ -9,12 +9,6 @@ services:
       args:
         environment: "production"
     restart: unless-stopped
-    command: sh -c "
-      ./docker/wait-for-it.sh 'prisma:4466'
-      && prisma deploy
-      && npm run get-schema
-      && npm run ${NODE_ENV}
-      "
     environment:
       - VIRTUAL_HOST
       - LETSENCRYPT_HOST

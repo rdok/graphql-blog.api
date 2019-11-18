@@ -1,13 +1,11 @@
-FROM node:12-alpine
+FROM rdok/graphql-blog-api:build
 
 RUN npm install -g prisma
 
-WORKDIR /app
-
-COPY package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json ./
 
 RUN npm install --production
 
-COPY . /app
+COPY --chown=node:node . /app
 
 RUN npm run build
