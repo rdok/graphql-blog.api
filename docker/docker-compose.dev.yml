@@ -2,13 +2,23 @@ version: "3.7"
 
 services:
   api:
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile.infrastructure
     volumes:
-      - ".:/app"
-      - "${DEV_NPM_CACHE}:/root/.npm"
+      - ".:/home/node/app"
+      - "${DEV_NPM_CACHE}:/home/node/.npm"
+      - "${DEV_NPM_GLOBAL_CACHE}:/home/node/.npm-global"
     ports:
       - "${VIRTUAL_PORT}:${VIRTUAL_PORT}"
-    command: tail -f /dev/null
-    working_dir: /app
+    command: sh -c "
+      npm install -g prisma
+      && npm install
+      && ./docker/wait-for-it.sh 'prisma:4466'
+      && prisma deploy
+      && npm run get-schema
+      && npm run ${NODE_ENV}
+      "
 
   db:
     ports:

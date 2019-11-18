@@ -3,7 +3,6 @@ version: "3.7"
 services:
 
   api:
-    image: node:12-alpine
     environment:
       - POSTGRES_PASSWORD
       - NODE_ENV
@@ -13,6 +12,12 @@ services:
       - prisma
     networks:
       - backend
+    command: sh -c "
+      ./docker/wait-for-it.sh 'prisma:4466'
+      && prisma deploy
+      && npm run get-schema
+      && npm run ${NODE_ENV}
+      "
 
   db:
     image: postgres:12-alpine
