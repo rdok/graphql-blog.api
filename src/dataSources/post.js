@@ -28,13 +28,9 @@ export default class PostAPI {
 
         data.author = {connect: {id: data.author}}
 
-        const post = this.prisma.mutation.createPost(
+        return this.prisma.mutation.createPost(
             {data: {...data}}, info
         )
-
-        this.postEvent.publishCreated(post)
-
-        return post
     }
 
     update = async (id, data, info) => {
@@ -68,13 +64,9 @@ export default class PostAPI {
             id: 'required|exists:Post,id',
         })
 
-        let post = await this.prisma.mutation.deletePost({
+        return await this.prisma.mutation.deletePost({
             where: {id: id}
         }, info)
-
-        this.postEvent.publishDeleted(post)
-
-        return post
     }
 
     all = (query, info) => {

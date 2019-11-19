@@ -18,45 +18,31 @@ class CommentAPI {
     }
 
     create = async (data, info) => {
-
         await this.validator.validate(data, {
             text: 'required',
-            // author: 'required|exists:User,id',
+            author: 'required|exists:User,id',
             post: 'required|existsWith:posts,id,published,true',
         })
 
-        const args = {
+        return this.prisma.mutation.createComment({
             data: {
                 ...data,
                 author: {connect: {id: data.author}},
                 post: {connect: {id: data.post}}
             }
-        }
-
-        const comment = this.prisma.mutation.createComment(args, info)
-
-        this.commentEvent.publishCreated(comment)
-
-        return comment
+        }, info)
     }
 
     update = async (id, data, info) => {
-        await this.validator.validate({
-            id: id,
-            ...data
-        }, {
-            text: 'required',
-            id: 'required|exists:Comment,id'
-        })
+        await this.validator.validate(
+            {id: id, ...data},
+            {text: 'required', id: 'required|exists:Comment,id'}
+        )
 
-        let comment = this.prisma.mutation.updateComment({
+        return this.prisma.mutation.updateComment({
             where: {id: id},
             data: {...data}
         }, info)
-
-        this.commentEvent.publishUpdated(comment)
-
-        return comment
     }
 
     all = (query, info) => {
@@ -68,13 +54,9 @@ class CommentAPI {
             id: 'required|exists:Comment,id',
         })
 
-        let comment = this.prisma.mutation.deleteComment({
+        return this.prisma.mutation.deleteComment({
             where: {id: id}
         }, info)
-
-        this.commentEvent.publishDeleted(comment)
-
-        return comment
     }
 
     find = (id) => {

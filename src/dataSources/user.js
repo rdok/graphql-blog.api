@@ -24,7 +24,6 @@ export default class UserAPI {
     }
 
     update = async (id, data, info) => {
-
         await this.validator.validate({id, ...data}, {
             email: `email|unique:user,email,except,id,${id}`,
         })
@@ -36,11 +35,9 @@ export default class UserAPI {
     }
 
     delete = async (id, info) => {
-        const userExists = await this.prisma.exists.User({id: id})
-
-        if (!userExists) {
-            throw new Error(`User id ${id} does not exists.`)
-        }
+        await this.validator.validate({id}, {
+            id: 'required|exists:User,id',
+        })
 
         return this.prisma.mutation.deleteUser({where: {id: id}}, info)
     }
@@ -67,9 +64,5 @@ export default class UserAPI {
         }
 
         return this.prisma.query.users(query, info)
-    }
-
-    find = (id, info) => {
-        return this.prisma.query.user({where: {id: id}, info})
     }
 }
