@@ -2,6 +2,6 @@ projects:
   GraphQLBlog:
     schemaPath: "src/generated/prisma.graphql"
     extensions:
+      prisma: "./prisma.yml"
       endpoints:
         default: 'http://prisma:4466'
-        secret: ${env:GRAPHQL_BLOG_API_PRISMA_SECRET}
