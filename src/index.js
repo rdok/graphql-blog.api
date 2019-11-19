@@ -1,4 +1,4 @@
-import {GraphQLServer, PubSub} from 'graphql-yoga'
+import {GraphQLServer} from 'graphql-yoga'
 
 import {Prisma} from 'prisma-binding'
 import UserAPI from './dataSources/user'
@@ -12,18 +12,12 @@ import User from './resolvers/User'
 import Comment from './resolvers/Comment'
 import Subscription from './resolvers/Subscription'
 
-import PostEvent from './events/post'
-import CommentEvent from './events/comment'
-
 import Validator from './validator/index'
-
-const pubsub = new PubSub()
-const postEvent = new PostEvent({pubsub})
-const commentEvent = new CommentEvent({pubsub})
 
 const prisma = new Prisma({
     typeDefs: "src/generated/prisma.graphql",
-    endpoint: "http://prisma:4466"
+    endpoint: "http://prisma:4466",
+    secret: process.env.GRAPHQL_BLOG_API_PRISMA_SECRET
 })
 
 const validator = new Validator({prisma});
@@ -31,15 +25,15 @@ const validator = new Validator({prisma});
 const dataSources = () => ({
     blogAPI: () => ({
         users: new UserAPI({prisma, validator}),
-        posts: new PostAPI({prisma, validator, postEvent}),
-        comments: new CommentAPI({prisma, validator, commentEvent}),
+        posts: new PostAPI({prisma, validator}),
+        comments: new CommentAPI({prisma, validator}),
     })
 })
 
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers: {Query, Mutation, Post, User, Comment, Subscription},
-    context: {dataSources, postEvent, commentEvent}
+    context: {dataSources, prisma}
 })
 
 const options = {

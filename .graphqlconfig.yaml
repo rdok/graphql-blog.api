@@ -4,3 +4,4 @@ projects:
     extensions:
       endpoints:
         default: 'http://prisma:4466'
+        secret: ${env:GRAPHQL_BLOG_API_PRISMA_SECRET}

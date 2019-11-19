@@ -1,4 +1,3 @@
-import PostEvent from '../events/post'
 import {Prisma} from "prisma-binding";
 import Validator from "../validator";
 
@@ -8,13 +7,10 @@ export default class PostAPI {
     prisma
     /** @type Validator */
     validator
-    /** @type PostEvent */
-    postEvent
 
-    constructor({prisma, validator, postEvent}) {
+    constructor({prisma, validator}) {
         this.prisma = prisma
         this.validator = validator
-        this.postEvent = postEvent
     }
 
     create = async (data, info) => {
@@ -48,13 +44,13 @@ export default class PostAPI {
             data: {...data}
         })
 
-        if (originalPost.published && !updatedPost.published) {
-            this.postEvent.publishDeleted(originalPost)
-        } else if (!originalPost.published && updatedPost.published) {
-            this.postEvent.publishCreated(updatedPost)
-        } else {
-            this.postEvent.publishUpdated(updatedPost)
-        }
+        // if (originalPost.published && !updatedPost.published) {
+        //     this.postEvent.publishDeleted(originalPost)
+        // } else if (!originalPost.published && updatedPost.published) {
+        //     this.postEvent.publishCreated(updatedPost)
+        // } else {
+        //     this.postEvent.publishUpdated(updatedPost)
+        // }
 
         return updatedPost
     }

@@ -40,17 +40,22 @@ enum SubscriptionMutationType {
 
 type Subscription {
     post: PostSubscriptionPayload!
-    comment(postId: ID!): CommentSubscriptionPayload!
+    comment(data: SubscribeToCommentInput): CommentSubscriptionPayload!
+}
+
+input SubscribeToCommentInput {
+    postId: ID
+    mutationIn: [SubscriptionMutationType]
 }
 
 type PostSubscriptionPayload {
     mutation: SubscriptionMutationType!
-    data: Post!
+    node: Post
 }
 
 type CommentSubscriptionPayload {
     mutation: SubscriptionMutationType!
-    data: Comment!
+    node: Comment
 }
 
 input CreateUserInput {

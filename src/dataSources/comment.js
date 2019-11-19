@@ -1,4 +1,3 @@
-import CommentEvent from "../events/comment";
 import {Prisma} from "prisma-binding";
 import Validator from "../validator";
 
@@ -8,13 +7,10 @@ class CommentAPI {
     prisma
     /** @type Validator */
     validator
-    /** @type CommentEvent */
-    commentEvent
 
-    constructor({prisma, validator, commentEvent}) {
+    constructor({prisma, validator}) {
         this.prisma = prisma
         this.validator = validator
-        this.commentEvent = commentEvent
     }
 
     create = async (data, info) => {

@@ -7,7 +7,7 @@ PROJECT_DIR="$(
 
 main() {
   docker build --tag rdok/graphql-blog-api:build . \
-  -f "${PROJECT_DIR}docker/api/Dockerfile.infrastructure"
+    -f "${PROJECT_DIR}docker/api/Dockerfile.infrastructure"
 
   docker-compose \
     --project-directory "${PROJECT_DIR}" \
@@ -18,4 +18,9 @@ main() {
 
 main "${1}" build
 main "${1}" down --remove-orphans
-main "${1}" up --detach
+
+if [ "${1}" = "dev" ]; then
+  main "${1}" up
+else
+  main "${1}" up --detach
+fi
