@@ -1,7 +1,6 @@
-import UserAPI from './user'
-import CommentAPI from './comment'
 import PostEvent from '../events/post'
 import {Prisma} from "prisma-binding";
+import Validator from "../validator";
 
 export default class PostAPI {
 
@@ -94,46 +93,5 @@ export default class PostAPI {
 
     find = (id, info) => {
         return this.prisma.query.post({where: {id: id}, info})
-    }
-
-    getByAuthorId = (authorId) => {
-        return this.prisma.posts.filter((post) => {
-            return post.author === authorId
-        })
-    }
-
-    deleteByAuthorId = (authorId) => {
-        const userQuery = new UserAPI({prisma: this.prisma})
-        const commentQuery = new CommentAPI({prisma: this.prisma})
-        userQuery.findOrFail(authorId)
-
-        this.prisma.posts = this.prisma.posts.filter((post) => {
-            const shouldDeletePost = post.author === authorId
-            if (shouldDeletePost) {
-                commentQuery.deleteByPostId(post.id)
-            }
-
-            return !shouldDeletePost
-        })
-    }
-
-    findOrFail = (id) => {
-        const post = this.prisma.posts.find((post) => {
-            return post.id === id
-        })
-        if (!post) {
-            throw new Error('That post id is invalid.')
-        }
-        return post
-    }
-
-    findIndexOrFail = (id) => {
-        const index = this.prisma.posts.findIndex((post) => {
-            return post.id === id
-        })
-        if (index === -1) {
-            throw new Error('That post id is invalid.')
-        }
-        return index
     }
 }

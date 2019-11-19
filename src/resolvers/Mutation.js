@@ -17,14 +17,14 @@ const Mutation = {
     deletePost(_, {id}, {dataSources}, info) {
         return dataSources().blogAPI().posts.delete(id, info)
     },
-    createComment(_, args, {dataSources}) {
-        return dataSources().blogAPI().comments.create(args.data)
+    createComment(_, {data}, {dataSources}, info) {
+        return dataSources().blogAPI().comments.create(data, info)
     },
-    updateComment(_, {id, data}, {dataSources}) {
-        return dataSources().blogAPI().comments.update(id, data)
+    updateComment(_, {id, data}, {dataSources}, info) {
+        return dataSources().blogAPI().comments.update(id, data, info)
     },
-    deleteComment(_, args, {dataSources}) {
-        return dataSources().blogAPI().comments.delete(args)
+    deleteComment(_, {id}, {dataSources}, info) {
+        return dataSources().blogAPI().comments.delete(id, info)
     },
 }
 

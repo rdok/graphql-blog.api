@@ -12,12 +12,10 @@ export default class Validator {
 
     /**
      * @param {{}} data
-     * @param {[]} rules
+     * @param {{}} rules
      */
     validate = async (data, rules) => {
-
         const errors = await this._generateErrors(data, rules)
-
         if (Object.keys(errors).length > 0) {
             throw new ValidationError(errors)
         }
@@ -65,8 +63,9 @@ export default class Validator {
     }
 
     required = (data) => {
-        return typeof data === 'undefined'
-            ? 'This field is required.' : null
+        return (typeof data === 'undefined' || data === '')
+            ? 'This field is required and cannot be empty.'
+            : null
     }
 
     boolean = (data) => {
@@ -100,5 +99,32 @@ export default class Validator {
 
         return recordExists ?
             null : `The selected value '${data}' is invalid.`
+    }
+
+    existsWith = async (data, args) => {
+        let [model, primaryColumn, secondaryColumn, secondaryValue] =
+            args.split(',')
+
+        if (!data) {
+            return null
+        }
+
+        if (secondaryValue === 'true') {
+            secondaryValue = true
+        }
+
+        const recordExists = await this.prisma.query[model]({
+            where: {
+                AND: [
+                    {[primaryColumn]: data},
+                    {[secondaryColumn]: secondaryValue}
+                ]
+            }
+        })
+
+        return recordExists.length > 0
+            ? null
+            : `Could not find record with '${primaryColumn}=${data} and `
+            + `'${secondaryColumn}=${secondaryValue}`
     }
 }

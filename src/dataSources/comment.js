@@ -1,82 +1,85 @@
-const uuidv4 = require('uuid/v4')
-import StoreCommentValidator from '../validator/comment/store'
-import UpdateCommentValidator from '../validator/comment/update'
-import UserAPI from './user'
-import PostAPI from './post'
+import CommentEvent from "../events/comment";
+import {Prisma} from "prisma-binding";
+import Validator from "../validator";
 
 class CommentAPI {
 
-    constructor({ db, commentEvent }) {
-        this.db = db
+    /** @type Prisma */
+    prisma
+    /** @type Validator */
+    validator
+    /** @type CommentEvent */
+    commentEvent
+
+    constructor({prisma, validator, commentEvent}) {
+        this.prisma = prisma
+        this.validator = validator
         this.commentEvent = commentEvent
     }
 
-    create = (attributes) => {
-        const validator = new StoreCommentValidator({ db: this.db })
-        validator.validate(attributes)
+    create = async (data, info) => {
 
-        const comment = { id: uuidv4(), ...attributes }
-        this.db.comments.push(comment)
+        await this.validator.validate(data, {
+            text: 'required',
+            // author: 'required|exists:User,id',
+            post: 'required|existsWith:posts,id,published,true',
+        })
+
+        const args = {
+            data: {
+                ...data,
+                author: {connect: {id: data.author}},
+                post: {connect: {id: data.post}}
+            }
+        }
+
+        const comment = this.prisma.mutation.createComment(args, info)
 
         this.commentEvent.publishCreated(comment)
-        //`commentCreated?postId=${attributes.post}`,
 
         return comment
     }
 
-    update = (id, input) => {
-        const validator = new UpdateCommentValidator({ commentAPI: this })
-        validator.validate(id, input)
+    update = async (id, data, info) => {
+        await this.validator.validate({
+            id: id,
+            ...data
+        }, {
+            text: 'required',
+            id: 'required|exists:Comment,id'
+        })
 
-        let comment = this.find(id)
-        comment = Object.assign(comment, input)
+        let comment = this.prisma.mutation.updateComment({
+            where: {id: id},
+            data: {...data}
+        }, info)
 
         this.commentEvent.publishUpdated(comment)
 
         return comment
     }
 
-    all = () => { return this.db.comments }
-
-    getByAuthorId = (authorId) => {
-        return this.db.comments.filter((comment) => { return authorId === comment.author })
+    all = (query, info) => {
+        return this.prisma.query.comments(query, info)
     }
 
-    delete = (attributes) => {
-        const index = this.findIndexOrFail(attributes.id)
-        const [comment] = this.db.comments.splice(index, 1)
+    delete = async (id, info) => {
+        await this.validator.validate({id}, {
+            id: 'required|exists:Comment,id',
+        })
+
+        let comment = this.prisma.mutation.deleteComment({
+            where: {id: id}
+        }, info)
 
         this.commentEvent.publishDeleted(comment)
 
         return comment
     }
 
-    findIndexOrFail = (id) => {
-        const index = this.db.comments.findIndex((comment) => { return comment.id === id })
-        if (index === -1) { throw new Error('That comment id is invalid.') }
-        return index
-    }
-    getByPostId = (postId) => {
-        return this.db.comments.filter((comment) => { return postId === comment.post })
-    }
-
-    deleteByAuthorId = (authorId) => {
-        const userQuery = new UserAPI({ db: this.db })
-        userQuery.findOrFail(authorId)
-
-        this.db.comments = this.db.comments.filter(comment => comment.author !== authorId)
-    }
-
-    deleteByPostId = (postId) => {
-        const postQuery = new PostAPI({ db: this.db })
-        postQuery.findOrFail(postId)
-
-        this.db.comments = this.db.comments.filter(comment => comment.post !== postId)
-    }
-
-    find = (commentId) => {
-        return this.db.comments.find((comment) => { return comment.id === commentId })
+    find = (id) => {
+        return this.prisma.query.comments({where: {id: id}})
     }
 }
 
-export { CommentAPI as default }
+export {CommentAPI as default}

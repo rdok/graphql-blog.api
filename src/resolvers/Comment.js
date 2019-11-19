@@ -1,10 +1,3 @@
-const Comment = {
-    author(comment, _, { dataSources }) {
-        return dataSources().blogAPI().users.find(comment.author)
-    },
-    post(comment, _, { dataSources }) {
-        return dataSources().blogAPI().posts.find(comment.post)
-    },
-}
+const Comment = {}
 
-export { Comment as default }
+export {Comment as default}

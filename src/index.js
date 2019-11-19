@@ -32,7 +32,7 @@ const dataSources = () => ({
     blogAPI: () => ({
         users: new UserAPI({prisma, validator}),
         posts: new PostAPI({prisma, validator, postEvent}),
-        comments: new CommentAPI({prisma, commentEvent}),
+        comments: new CommentAPI({prisma, validator, commentEvent}),
     })
 })
 

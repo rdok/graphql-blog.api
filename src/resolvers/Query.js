@@ -11,8 +11,8 @@ const Query = {
     posts(_, {query}, {dataSources}, info) {
         return dataSources().blogAPI().posts.all(query, info)
     },
-    comments(_, __, {dataSources}) {
-        return dataSources().blogAPI().comments.all()
+    comments(_, {query}, {dataSources}, info) {
+        return dataSources().blogAPI().comments.all(query, info)
     }
 }
 
