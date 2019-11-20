@@ -23,7 +23,7 @@ type Comment {
 }
 
 type Mutation {
-    createUser( data: CreateUserInput! ): User!
+    createUser( data: CreateUserInput! ): AuthPayload!
     updateUser( id: String!, data: UpdateUserInput! ): User!
     deleteUser( id: String! ): User!
     createPost( data: CreatePostInput! ): Post!
@@ -32,6 +32,11 @@ type Mutation {
     createComment( data: CreateCommentInput! ): Comment!
     updateComment( id: ID!, data: UpdateCommentInput! ): Comment!
     deleteComment(id: ID!): Comment!
+}
+
+type AuthPayload {
+    user: User!
+    token: String!
 }
 
 enum SubscriptionMutationType {
@@ -85,7 +90,7 @@ input UpdatePostInput {
 input CreateCommentInput {
     author: ID!
     post: ID!
-    text: String! 
+    text: String!
 }
 
 input UpdateCommentInput {

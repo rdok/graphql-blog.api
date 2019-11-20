@@ -1,6 +1,7 @@
 import {Prisma} from "prisma-binding";
 import Validator from '../validator/index'
 import bcryptjs from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 export default class UserAPI {
 
@@ -20,11 +21,19 @@ export default class UserAPI {
             password: 'required|min:7'
         })
 
-        data.password = await bcryptjs.hash(data.password, 10)
 
-        return this.prisma.mutation.createUser({
-            data: {...data}, info
+        const password = await bcryptjs.hash(data.password, 10)
+        const user = await this.prisma.mutation.createUser({
+            data: {...data, password}, info
         })
+
+        const token = jwt.sign(
+            {id: user.id},
+            process.env.JWT_AUTH_SECRET,
+            {expiresIn: '1h'}
+        )
+
+        return {user, token}
     }
 
     update = async (id, data, info) => {

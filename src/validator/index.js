@@ -59,8 +59,6 @@ export default class Validator {
             }
         }
 
-
-        console.log(errors)
         return errors
     }
 

@@ -17,7 +17,7 @@ import Validator from './validator/index'
 const prisma = new Prisma({
     typeDefs: "src/generated/prisma.graphql",
     endpoint: "http://prisma:4466",
-    secret: process.env.GRAPHQL_BLOG_API_PRISMA_SECRET
+    secret: process.env.PRISMA_SECRET
 })
 
 const validator = new Validator({prisma});
