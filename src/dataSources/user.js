@@ -2,17 +2,20 @@ import {Prisma} from "prisma-binding";
 import Validator from '../validator/index'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import Auth from "../services/auth";
 
 export default class UserAPI {
-
+    /** @type Auth auth */
+    auth
     /** @type Prisma prisma */
     prisma
     /** @type Validator validator */
     validator
 
-    constructor({prisma, validator}) {
+    constructor({prisma, validator, auth}) {
         this.prisma = prisma
         this.validator = validator
+        this.auth = auth
     }
 
     create = async (data, info) => {
@@ -26,18 +29,9 @@ export default class UserAPI {
             data: {...data, password}, info
         })
 
-        return this.generateAuthPayload(user)
+        return this.auth.generateAuthPayload(user)
     }
 
-    generateAuthPayload(user) {
-        const token = jwt.sign(
-            {id: user.id},
-            process.env.JWT_AUTH_SECRET,
-            {expiresIn: '1h'}
-        )
-
-        return {user, token}
-    }
 
     login = async (data) => {
         await this.validator.validate(data, {
@@ -49,19 +43,21 @@ export default class UserAPI {
         const isMatch = await bcryptjs.compare(data.password, user.password)
 
         return isMatch
-            ? this.generateAuthPayload(user)
+            ? this.auth.generateAuthPayload(user)
             : throw new Error('Invalid password.')
     }
 
-    update = async (id, data, info) => {
-        await this.validator.validate({id, ...data}, {
-            email: `email|unique:user,email,except,id,${id}`,
+    update = async ({data, app}) => {
+        const userId = await this.auth.validate(app)
+
+        await this.validator.validate({userId, ...data}, {
+            email: `email|unique:user,email,except,id,${userId}`,
         })
 
         return await this.prisma.mutation.updateUser({
-            where: {id: id},
+            where: {id: userId},
             data: {...data}
-        }, info)
+        })
     }
 
     delete = async (id, info) => {

@@ -26,7 +26,7 @@ type Mutation {
     # User
     createUser( data: CreateUserInput! ): AuthPayload!
     login( data: LoginInput ): AuthPayload!
-    updateUser( id: String!, data: UpdateUserInput! ): User!
+    updateUser( data: UpdateUserInput! ): User!
     deleteUser( id: String! ): User!
 
     # Post

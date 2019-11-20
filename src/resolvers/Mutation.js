@@ -5,8 +5,8 @@ const Mutation = {
     login(_, {data}, {dataSources}, info) {
         return dataSources().blogAPI().users.login(data)
     },
-    updateUser(_, {id, data}, {dataSources}) {
-        return dataSources().blogAPI().users.update(id, data)
+    updateUser(_, {data}, {dataSources, app}) {
+        return dataSources().blogAPI().users.update({data, app})
     },
     deleteUser(_, {id}, {dataSources}) {
         return dataSources().blogAPI().users.delete(id)

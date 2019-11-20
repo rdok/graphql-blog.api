@@ -13,6 +13,8 @@ import Comment from './resolvers/Comment'
 import Subscription from './resolvers/Subscription'
 
 import Validator from './validator/index'
+import Auth from "./services/auth";
+import AuthMiddleware from "./middleware/auth";
 
 const prisma = new Prisma({
     typeDefs: "src/generated/prisma.graphql",
@@ -21,10 +23,11 @@ const prisma = new Prisma({
 })
 
 const validator = new Validator({prisma});
+const auth = new Auth({prisma, validator});
 
 const dataSources = () => ({
     blogAPI: () => ({
-        users: new UserAPI({prisma, validator}),
+        users: new UserAPI({prisma, validator, auth}),
         posts: new PostAPI({prisma, validator}),
         comments: new CommentAPI({prisma, validator}),
     })
@@ -33,7 +36,10 @@ const dataSources = () => ({
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers: {Query, Mutation, Post, User, Comment, Subscription},
-    context: {dataSources, prisma}
+    context(app) {
+        return {dataSources, prisma, app, auth}
+    },
+    middlewares: [AuthMiddleware]
 })
 
 const options = {
