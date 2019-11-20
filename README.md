@@ -3,7 +3,7 @@
 Hands on GraphQL using Node.js, Prisma, auth, Apollo Client. 
 
 ## Production
-$ `./docker/up production`
+$ `./docker/up.sh production`
 
 ## Development
 Copy .env.example to .env, and fill variables.
