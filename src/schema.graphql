@@ -23,17 +23,27 @@ type Comment {
 }
 
 type Mutation {
+    # User
     createUser( data: CreateUserInput! ): AuthPayload!
+    login( data: LoginInput ): AuthPayload!
     updateUser( id: String!, data: UpdateUserInput! ): User!
     deleteUser( id: String! ): User!
+
+    # Post
     createPost( data: CreatePostInput! ): Post!
     updatePost( id: ID!, data: UpdatePostInput! ): Post!
     deletePost(id: ID!): Post!
+
+    # Comment
     createComment( data: CreateCommentInput! ): Comment!
     updateComment( id: ID!, data: UpdateCommentInput! ): Comment!
     deleteComment(id: ID!): Comment!
 }
 
+input LoginInput {
+    email: String!
+    password: String!
+}
 type AuthPayload {
     user: User!
     token: String!

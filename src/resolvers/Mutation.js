@@ -2,6 +2,9 @@ const Mutation = {
     createUser(_, {data}, {dataSources}, info) {
         return dataSources().blogAPI().users.create(data, info)
     },
+    login(_, {data}, {dataSources}, info) {
+        return dataSources().blogAPI().users.login(data)
+    },
     updateUser(_, {id, data}, {dataSources}) {
         return dataSources().blogAPI().users.update(id, data)
     },

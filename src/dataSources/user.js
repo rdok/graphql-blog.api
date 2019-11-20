@@ -21,12 +21,15 @@ export default class UserAPI {
             password: 'required|min:7'
         })
 
-
         const password = await bcryptjs.hash(data.password, 10)
         const user = await this.prisma.mutation.createUser({
             data: {...data, password}, info
         })
 
+        return this.generateAuthPayload(user)
+    }
+
+    generateAuthPayload(user) {
         const token = jwt.sign(
             {id: user.id},
             process.env.JWT_AUTH_SECRET,
@@ -34,6 +37,20 @@ export default class UserAPI {
         )
 
         return {user, token}
+    }
+
+    login = async (data) => {
+        await this.validator.validate(data, {
+            email: 'required|email|exists:User,email',
+            password: 'required',
+        })
+
+        const user = await this.findByEmail(data.email)
+        const isMatch = await bcryptjs.compare(data.password, user.password)
+
+        return isMatch
+            ? this.generateAuthPayload(user)
+            : throw new Error('Invalid password.')
     }
 
     update = async (id, data, info) => {
@@ -56,11 +73,7 @@ export default class UserAPI {
     }
 
     findByEmail = async (email, info) => {
-        const user = await this.prisma.query.user({where: {email: email}}, info)
-
-        return user === null ?
-            throw new Error(`User with ${email} does not exists.`)
-            : user
+        return await this.prisma.query.user({where: {email: email}}, info)
     }
 
     all = (query, info) => {
