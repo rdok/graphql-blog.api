@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile
-      args:
-        environment: "production"
     restart: unless-stopped
     environment:
       - VIRTUAL_HOST

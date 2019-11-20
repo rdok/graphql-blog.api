@@ -1,5 +1,6 @@
 import {Prisma} from "prisma-binding";
 import Validator from '../validator/index'
+import bcryptjs from 'bcryptjs'
 
 export default class UserAPI {
 
@@ -15,8 +16,11 @@ export default class UserAPI {
 
     create = async (data, info) => {
         await this.validator.validate(data, {
-            email: 'email|unique:user,email'
+            email: 'required|email|unique:user,email',
+            password: 'required|min:7'
         })
+
+        data.password = await bcryptjs.hash(data.password, 10)
 
         return this.prisma.mutation.createUser({
             data: {...data}, info
