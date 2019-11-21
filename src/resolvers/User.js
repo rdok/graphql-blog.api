@@ -1,5 +1,5 @@
 const User = {
-    email(parent, args, {user}, info) {
+    email(parent, args, {user}) {
         const emailOwnedByLoggedInUser = user && user.email === parent.email
 
         return emailOwnedByLoggedInUser ? user.email : null

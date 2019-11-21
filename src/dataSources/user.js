@@ -1,7 +1,5 @@
 import {Prisma} from "prisma-binding";
 import Validator from '../validator/index'
-import bcryptjs from 'bcryptjs'
-import jwt from 'jsonwebtoken'
 import Auth from "../services/auth";
 
 export default class UserAPI {
@@ -11,6 +9,7 @@ export default class UserAPI {
     prisma
     /** @type Validator validator */
     validator
+    passwordRule = 'min:7'
 
     constructor({prisma, validator, auth}) {
         this.prisma = prisma
@@ -18,44 +17,47 @@ export default class UserAPI {
         this.auth = auth
     }
 
-    create = async (data, info) => {
+    create = async (data, {app}, info) => {
         await this.validator.validate(data, {
             email: 'required|email|unique:user,email',
-            password: 'required|min:7'
+            password: 'required|' + this.passwordRule
         })
 
-        const password = await bcryptjs.hash(data.password, 10)
+        const password = await this.auth.hash(data.password)
         const user = await this.prisma.mutation.createUser({
             data: {...data, password}, info
         })
 
-        return this.auth.generateAuthPayload(user)
+        return this.auth.generateAuthPayload(app, user)
     }
 
 
-    login = async (data) => {
+    login = async (data, {app}) => {
         await this.validator.validate(data, {
             email: 'required|email|exists:User,email',
             password: 'required',
         })
 
         const user = await this.show(data.email)
-        const isMatch = await bcryptjs.compare(data.password, user.password)
+        const isMatch = await this.auth.compare(data.password, user.password)
 
         return isMatch
-            ? this.auth.generateAuthPayload(user)
+            ? this.auth.generateAuthPayload(app, user)
             : throw new Error('Invalid password.')
     }
 
     update = async ({data, user}) => {
         await this.validator.validate({...data}, {
             email: `email|unique:user,email,except,id,${user.id}`,
+            password: this.passwordRule
         })
 
-        return await this.prisma.mutation.updateUser({
-            where: {id: user.id},
-            data: {...data}
-        })
+        if (data.password) {
+            data.password = await this.auth.hash(data.password)
+        }
+
+        return await this.prisma.mutation
+            .updateUser({where: {id: user.id}, data})
     }
 
     delete = async (user, info) => {

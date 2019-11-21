@@ -1,7 +1,6 @@
 import Query from '../resolvers/Query'
 import Mutation from '../resolvers/Mutation'
 import Subscription from '../resolvers/Subscription'
-import auth from "../services/auth";
 import User from '../resolvers/User'
 
 const authMiddleware = {Query: {}}
@@ -31,6 +30,7 @@ Object.keys(User).forEach((key) => {
     authMiddleware.User[key] = login
 })
 
+console.log(authMiddleware.User)
 async function login(resolve, parent, args, context, info) {
     const {auth, app} = context
 

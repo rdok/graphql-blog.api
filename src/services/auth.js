@@ -1,5 +1,6 @@
 import {Prisma} from "prisma-binding";
 import jwt from 'jsonwebtoken'
+import bcryptjs from "bcryptjs";
 
 export default class Auth {
     /** @type Prisma prisma */
@@ -55,8 +56,17 @@ export default class Auth {
         return process.env.JWT_AUTH_SECRET
     }
 
-    generateAuthPayload(user) {
+    async hash(password) {
+        return await bcryptjs.hash(password, 10)
+    }
+
+    async compare(password, hash) {
+        return await bcryptjs.compare(password, hash)
+    }
+
+    generateAuthPayload(app, user) {
         const token = jwt.sign({id: user.id}, this.secret(), {expiresIn: '48h'})
+        app.request.headers.authorization = token
 
         return {user, token}
     }
