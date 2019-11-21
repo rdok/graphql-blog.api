@@ -20,14 +20,28 @@ export default class Auth {
         }
     }
 
-    async userOrFail(app) {
-        const headers = app.request.headers
-        await this.validator.validate(headers, {
-            authorization: 'required',
-        })
+    extractAuthToken = async (app) => {
+        let token
 
-        let token = headers.authorization
-        token = token.replace('Bearer ', '')
+        if (app.request) {
+            const headers = app.request.headers
+            await this.validator.validate(headers, {
+                authorization: 'required',
+            })
+            token = headers.authorization
+        } else {
+            const context = app.connection.context
+            await this.validator.validate(context, {
+                Authorization: 'required',
+            })
+            token = context.Authorization
+        }
+
+        return token.replace('Bearer ', '')
+    }
+
+    async userOrFail(app) {
+        let token = await this.extractAuthToken(app)
 
         const decoded = jwt.verify(token, this.secret())
 

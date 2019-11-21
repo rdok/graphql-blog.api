@@ -34,9 +34,7 @@ Object.keys(User).forEach((key) => {
 async function login(resolve, parent, args, context, info) {
     const {auth, app} = context
 
-    if (!app.connection) {
-        context.user = await auth.userOrFail(app)
-    }
+    context.user = await auth.userOrFail(app)
 
     return resolve(parent, args, context, info)
 }

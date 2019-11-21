@@ -26,7 +26,7 @@ const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
     context(app) {
-        return {dataSources, prisma, app, auth}
+        return {dataSources, prisma, app, auth, validator}
     },
     middlewares: [AuthMiddleware],
     fragmentReplacements

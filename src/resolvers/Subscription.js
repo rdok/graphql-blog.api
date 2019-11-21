@@ -1,7 +1,11 @@
 const Subscription = {
     comment: {
-        subscribe(_, {data}, {prisma}, info) {
+        async subscribe(_, {data}, {validator, prisma}, info) {
             let subscriptionInput = {where: {}}
+
+            await validator.validate(data, {
+                postId: 'exists:Post,id',
+            })
 
             if (data.postId) {
                 subscriptionInput.where.node = {post: {id: data.postId}}
