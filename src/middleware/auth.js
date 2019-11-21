@@ -24,7 +24,7 @@ async function login(resolve, parent, args, context, info) {
     const {auth, app} = context
 
     if (!app.connection) {
-        context.user = await auth.login(app)
+        context.user = await auth.user(app)
     }
 
     return resolve(parent, args, context, info)

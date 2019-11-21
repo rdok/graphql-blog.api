@@ -1,33 +1,44 @@
 const Mutation = {
+    // #########################################################################
+    // # User                                                                  #
+    // #########################################################################
     createUser(_, {data}, {dataSources}, info) {
         return dataSources().blogAPI().users.create(data, info)
     },
     login(_, {data}, {dataSources}, info) {
         return dataSources().blogAPI().users.login(data)
     },
-    updateUser(_, {data}, {dataSources, app}) {
-        return dataSources().blogAPI().users.update({data, app})
+    updateUser(_, {data}, {dataSources, user}) {
+        return dataSources().blogAPI().users.update({data, user})
     },
-    deleteUser(_, {id}, {dataSources}) {
-        return dataSources().blogAPI().users.delete(id)
+    deleteUser(_, __, {dataSources, user}) {
+        return dataSources().blogAPI().users.delete(user)
     },
-    createPost(_, {data}, {dataSources}, info) {
-        return dataSources().blogAPI().posts.create(data, info)
+
+    // #########################################################################
+    // # Post                                                                  #
+    // #########################################################################
+    createPost(_, {data}, {dataSources, user}, info) {
+        return dataSources().blogAPI().posts.create({data, info, user})
     },
-    updatePost(_, {id, data}, {dataSources}, info) {
-        return dataSources().blogAPI().posts.update(id, data, info)
+    updatePost(_, {id, data}, {dataSources, user},) {
+        return dataSources().blogAPI().posts.update(id, {data, user})
     },
-    deletePost(_, {id}, {dataSources}, info) {
-        return dataSources().blogAPI().posts.delete(id, info)
+    deletePost(_, {id}, {dataSources, user}, info) {
+        return dataSources().blogAPI().posts.delete({id, info, user})
     },
-    createComment(_, {data}, {dataSources}, info) {
-        return dataSources().blogAPI().comments.create(data, info)
+
+    // #########################################################################
+    // # Comment                                                               #
+    // #########################################################################
+    createComment(_, {data}, {dataSources, user}, info) {
+        return dataSources().blogAPI().comments.create({data, info, user})
     },
-    updateComment(_, {id, data}, {dataSources}, info) {
-        return dataSources().blogAPI().comments.update(id, data, info)
+    updateComment(_, {id, data}, {dataSources, user}, info) {
+        return dataSources().blogAPI().comments.update(id, {data, info, user})
     },
-    deleteComment(_, {id}, {dataSources}, info) {
-        return dataSources().blogAPI().comments.delete(id, info)
+    deleteComment(_, {id}, {dataSources, user}, info) {
+        return dataSources().blogAPI().comments.delete({id, info, user})
     },
 }
 

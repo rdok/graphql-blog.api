@@ -7,6 +7,7 @@ import email from "./rules/email";
 import boolean from "./rules/boolean";
 import required from "./rules/required";
 import min from "./rules/min";
+import hasRelation from './rules/has-relation'
 
 export default class Validator {
     /** @type Prisma prisma */
@@ -62,6 +63,7 @@ export default class Validator {
         return errors
     }
 
+    hasRelation = hasRelation
     required = required
     boolean = boolean
     email = email

@@ -13,51 +13,38 @@ export default class PostAPI {
         this.validator = validator
     }
 
-    create = async (data, info) => {
-
+    create = async ({data, info, user}) => {
         await this.validator.validate(data, {
             title: 'required',
             body: 'required',
             published: 'required|boolean',
-            author: 'required|exists:User,id',
         })
 
-        data.author = {connect: {id: data.author}}
+        data.author = {connect: {id: user.id}}
 
         return this.prisma.mutation.createPost(
             {data: {...data}}, info
         )
     }
 
-    update = async (id, data, info) => {
+    update = async (id, {data, user}) => {
 
         await this.validator.validate({id, ...data}, {
-            id: 'required|exists:Post,id',
-            author: 'exists:User,id',
+            // TODO: replace validation with shield/policy
+            id: `required|hasRelation:posts,id,author,id,${user.id}`,
             published: 'boolean',
         })
 
-        const originalPost = await this.find(id)
-
-        const updatedPost = await this.prisma.mutation.updatePost({
+        return this.prisma.mutation.updatePost({
             where: {id: id},
             data: {...data}
         })
-
-        // if (originalPost.published && !updatedPost.published) {
-        //     this.postEvent.publishDeleted(originalPost)
-        // } else if (!originalPost.published && updatedPost.published) {
-        //     this.postEvent.publishCreated(updatedPost)
-        // } else {
-        //     this.postEvent.publishUpdated(updatedPost)
-        // }
-
-        return updatedPost
     }
 
-    delete = async (id, info) => {
+    delete = async ({id, info, user}) => {
         await this.validator.validate({id}, {
-            id: 'required|exists:Post,id',
+            // TODO: replace validation with shield/policy
+            id: `required|hasRelation:posts,id,author,id,${user.id}`,
         })
 
         return await this.prisma.mutation.deletePost({

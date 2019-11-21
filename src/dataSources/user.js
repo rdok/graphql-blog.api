@@ -47,25 +47,19 @@ export default class UserAPI {
             : throw new Error('Invalid password.')
     }
 
-    update = async ({data, app}) => {
-        const userId = await this.auth.validate(app)
-
-        await this.validator.validate({userId, ...data}, {
-            email: `email|unique:user,email,except,id,${userId}`,
+    update = async ({data, user}) => {
+        await this.validator.validate({...data}, {
+            email: `email|unique:user,email,except,id,${user.id}`,
         })
 
         return await this.prisma.mutation.updateUser({
-            where: {id: userId},
+            where: {id: user.id},
             data: {...data}
         })
     }
 
-    delete = async (id, info) => {
-        await this.validator.validate({id}, {
-            id: 'required|exists:User,id',
-        })
-
-        return this.prisma.mutation.deleteUser({where: {id: id}}, info)
+    delete = async (user, info) => {
+        return this.prisma.mutation.deleteUser({where: {id: user.id}}, info)
     }
 
     findByEmail = async (email, info) => {

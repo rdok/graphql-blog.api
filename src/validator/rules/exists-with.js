@@ -1,8 +1,8 @@
-export default async function existsWith(data, args) {
-    let [model, primaryColumn, secondaryColumn, secondaryValue] =
+export default async function existsWith(primaryValue, args) {
+    let [type, primaryField, secondaryField, secondaryValue] =
         args.split(',')
 
-    if (!data) {
+    if (!primaryValue) {
         return null
     }
 
@@ -10,17 +10,17 @@ export default async function existsWith(data, args) {
         secondaryValue = true
     }
 
-    const recordExists = await this.prisma.query[model]({
+    const recordExists = await this.prisma.query[type]({
         where: {
             AND: [
-                {[primaryColumn]: data},
-                {[secondaryColumn]: secondaryValue}
+                {[primaryField]: primaryValue},
+                {[secondaryField]: secondaryValue}
             ]
         }
     })
 
     return recordExists.length > 0
         ? null
-        : `Could not find record with '${primaryColumn}=${data} and `
-        + `'${secondaryColumn}=${secondaryValue}`
+        : `Could not find type '${type}' with '${primaryField}=${primaryValue}'`
+        + ` and '${secondaryField}=${secondaryValue}'`
 }

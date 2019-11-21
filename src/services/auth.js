@@ -12,7 +12,7 @@ export default class Auth {
         this.validator = validator
     }
 
-    async login(app) {
+    async user(app) {
         const headers = app.request.headers
         await this.validator.validate(headers, {
             authorization: 'required',
@@ -23,7 +23,10 @@ export default class Auth {
 
         const decoded = jwt.verify(token, this.secret())
 
-        return this.prisma.query.user({where: {id: decoded.id}})
+        const user = await this.prisma.query.user({where: {id: decoded.id}})
+
+        return user ? user
+            : throw new Error('Unable to find user with the given token')
     }
 
     secret() {

@@ -13,27 +13,27 @@ class CommentAPI {
         this.validator = validator
     }
 
-    create = async (data, info) => {
+    create = async ({data, info, user}) => {
         await this.validator.validate(data, {
             text: 'required',
-            author: 'required|exists:User,id',
             post: 'required|existsWith:posts,id,published,true',
         })
 
         return this.prisma.mutation.createComment({
             data: {
                 ...data,
-                author: {connect: {id: data.author}},
+                author: {connect: {id: user.id}},
                 post: {connect: {id: data.post}}
             }
         }, info)
     }
 
-    update = async (id, data, info) => {
-        await this.validator.validate(
-            {id: id, ...data},
-            {text: 'required', id: 'required|exists:Comment,id'}
-        )
+    update = async (id, {data, info, user}) => {
+        await this.validator.validate({id: id, ...data}, {
+            text: 'required',
+            // TODO: replace validation with shield/policy
+            id: `required|hasRelation:comments,id,author,id,${user.id}`,
+        })
 
         return this.prisma.mutation.updateComment({
             where: {id: id},
@@ -45,9 +45,10 @@ class CommentAPI {
         return this.prisma.query.comments(query, info)
     }
 
-    delete = async (id, info) => {
+    delete = async ({id, info, user}) => {
         await this.validator.validate({id}, {
-            id: 'required|exists:Comment,id',
+            // TODO: replace validation with shield/policy
+            id: `required|hasRelation:comments,id,author,id,${user.id}`,
         })
 
         return this.prisma.mutation.deleteComment({
