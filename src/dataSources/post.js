@@ -39,10 +39,17 @@ export default class PostAPI {
             published: 'boolean',
         })
 
-        return this.prisma.mutation.updatePost({
+        const updatedPost = this.prisma.mutation.updatePost({
             where: {id: id},
             data: {...data}
         })
+
+        if (!updatedPost.published) {
+            await this.prisma.mutation
+                .deleteManyComments({where: {post: {id: id}}})
+        }
+
+        return updatedPost
     }
 
     delete = async ({id, info, user}) => {

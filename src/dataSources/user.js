@@ -69,14 +69,7 @@ export default class UserAPI {
     index = (query, info) => {
 
         if (query) {
-            query = {
-                where: {
-                    OR: [
-                        {name_contains: query},
-                        {email_contains: query},
-                    ]
-                }
-            }
+            query = {where: {OR: [{name_contains: query},]}}
         }
 
         return this.prisma.query.users(query, info)
