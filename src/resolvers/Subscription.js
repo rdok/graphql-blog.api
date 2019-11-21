@@ -17,6 +17,13 @@ const Subscription = {
             return prisma.subscription.comment(subscriptionInput, info)
         }
     },
+    loggedInUserComments: {
+        subscribe(_, __, {prisma, user}, info) {
+            return prisma.subscription.comment({
+                where: {node: {author: {id: user.id}}}
+            }, info)
+        }
+    },
     post: {
         subscribe(_, __, {prisma}, info) {
             return prisma.subscription.post({
@@ -24,6 +31,13 @@ const Subscription = {
             }, info)
         }
     },
+    loggedInUserPosts: {
+        subscribe(_, __, {prisma, user}, info) {
+            return prisma.subscription.post({
+                where: {node: {author: {id: user.id}}}
+            }, info)
+        }
+    }
 }
 
 export {Subscription as default}

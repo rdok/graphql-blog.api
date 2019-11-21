@@ -56,7 +56,9 @@ enum SubscriptionMutationType {
 
 type Subscription {
     post: PostSubscriptionPayload!
+    loggedInUserPosts: PostSubscriptionPayload!
     comment(data: SubscribeToCommentInput): CommentSubscriptionPayload!
+    loggedInUserComments: CommentSubscriptionPayload!
 }
 
 input SubscribeToCommentInput {
