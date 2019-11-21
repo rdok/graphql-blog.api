@@ -42,7 +42,7 @@ export default class Auth {
     }
 
     generateAuthPayload(user) {
-        const token = jwt.sign({id: user.id}, this.secret(), {expiresIn: '1h'})
+        const token = jwt.sign({id: user.id}, this.secret(), {expiresIn: '48h'})
 
         return {user, token}
     }
