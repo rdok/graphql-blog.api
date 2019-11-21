@@ -57,28 +57,19 @@ export default class PostAPI {
     }
 
     index = async (query, {info, auth, app}) => {
-        let input = {}
+        let input = {where: {published: true}}
         const user = await auth.user(app)
+        const filterWhere = {OR: [{title_contains: query}, {body_contains: query},]}
 
         if (!user) {
             input.where = {published: true}
             if (query) {
-                input.where.OR = [
-                    {title_contains: query},
-                    {body_contains: query},
-                ]
+                input.where.OR = filterWhere.OR
             }
         } else {
             input = {where: {OR: [{author: {id: user.id}}, {published: true}]}}
             if (query) {
-                input = {
-                    where: {
-                        AND: [
-                            input.where,
-                            {OR: [{title_contains: query}, {body_contains: query},]}
-                        ]
-                    }
-                }
+                input = {where: {AND: [input.where, filterWhere]}}
             }
         }
 
