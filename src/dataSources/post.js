@@ -90,9 +90,12 @@ export default class PostAPI {
             id: 'required|exists:Post,id',
         })
 
-        const post = await this.prisma.query.post({where: {id: id}}, '{ published author { id } }')
-        const user = await this.auth.user(app)
+        const post = await this.prisma.query.post(
+            {where: {id: id}},
+            '{ published author { id } }'
+        )
 
+        const user = await this.auth.user(app)
         const mayShow = post.published || (user && user.id === post.author.id)
 
         if (!mayShow) {

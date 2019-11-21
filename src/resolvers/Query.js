@@ -5,6 +5,9 @@ const Query = {
     user(_, {data}, {dataSources}, info) {
         return dataSources().blogAPI().users.show(data.email, info)
     },
+    loggedInUser(_, {data}, {dataSources, user}, info) {
+        return dataSources().blogAPI().users.show(user.email, info)
+    },
     post(_, {data}, {dataSources, app}, info) {
         return dataSources().blogAPI().posts.show(data.id, {app}, info)
     },

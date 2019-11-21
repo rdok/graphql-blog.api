@@ -106,6 +106,7 @@ input UpdateCommentInput { text: String }
 
 type Query {
     users(query: String): [ User! ] !
+    loggedInUser: User!
     user(data: GetUserInput): User!
     post(data: GetPostInput): Post!
     posts(query: String): [ Post! ] !
