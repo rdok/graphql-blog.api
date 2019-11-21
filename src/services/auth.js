@@ -13,6 +13,14 @@ export default class Auth {
     }
 
     async user(app) {
+        try {
+            return await this.userOrFail(app)
+        } catch (e) {
+            return null
+        }
+    }
+
+    async userOrFail(app) {
         const headers = app.request.headers
         await this.validator.validate(headers, {
             authorization: 'required',

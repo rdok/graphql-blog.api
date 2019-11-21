@@ -28,7 +28,7 @@ const auth = new Auth({prisma, validator});
 const dataSources = () => ({
     blogAPI: () => ({
         users: new UserAPI({prisma, validator, auth}),
-        posts: new PostAPI({prisma, validator}),
+        posts: new PostAPI({prisma, validator, auth}),
         comments: new CommentAPI({prisma, validator}),
     })
 })

@@ -1,5 +1,6 @@
 import {Prisma} from "prisma-binding";
 import Validator from "../validator";
+import Auth from "../services/auth";
 
 export default class PostAPI {
 
@@ -7,10 +8,13 @@ export default class PostAPI {
     prisma
     /** @type Validator */
     validator
+    /** @type Auth */
+    auth
 
-    constructor({prisma, validator}) {
+    constructor({prisma, validator, auth}) {
         this.prisma = prisma
         this.validator = validator
+        this.auth = auth
     }
 
     create = async ({data, info, user}) => {
@@ -52,21 +56,49 @@ export default class PostAPI {
         }, info)
     }
 
-    all = (query, info) => {
-        if (query) {
-            query = {
-                where: {
-                    OR: [
-                        {title_contains: query},
-                        {body_contains: query},
-                    ]
+    index = async (query, {info, auth, app}) => {
+        let input = {}
+        const user = await auth.user(app)
+
+        if (!user) {
+            input.where = {published: true}
+            if (query) {
+                input.where.OR = [
+                    {title_contains: query},
+                    {body_contains: query},
+                ]
+            }
+        } else {
+            input = {where: {OR: [{author: {id: user.id}}, {published: true}]}}
+            if (query) {
+                input = {
+                    where: {
+                        AND: [
+                            input.where,
+                            {OR: [{title_contains: query}, {body_contains: query},]}
+                        ]
+                    }
                 }
             }
         }
-        return this.prisma.query.posts(query, info)
+
+        return this.prisma.query.posts(input, info)
     }
 
-    find = (id, info) => {
-        return this.prisma.query.post({where: {id: id}, info})
+    show = async (id, {app}, info) => {
+        await this.validator.validate({id}, {
+            id: 'required|exists:Post,id',
+        })
+
+        const post = await this.prisma.query.post({where: {id: id}}, '{ published author { id } }')
+        const user = await this.auth.user(app)
+
+        const mayShow = post.published || (user && user.id === post.author.id)
+
+        if (!mayShow) {
+            throw new Error('That post is unpublished.')
+        }
+
+        return await this.prisma.query.post({where: {id: id}}, info)
     }
 }

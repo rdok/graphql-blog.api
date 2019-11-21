@@ -41,7 +41,7 @@ class CommentAPI {
         }, info)
     }
 
-    all = (query, info) => {
+    index = (query, info) => {
         return this.prisma.query.comments(query, info)
     }
 

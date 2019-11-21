@@ -1,18 +1,18 @@
 const Query = {
     users(_, {query}, {dataSources}, info) {
-        return dataSources().blogAPI().users.all(query, info)
+        return dataSources().blogAPI().users.index(query, info)
     },
     user(_, {data}, {dataSources}, info) {
-        return dataSources().blogAPI().users.findByEmail(data.email, info)
+        return dataSources().blogAPI().users.show(data.email, info)
     },
-    post(_, __, {dataSources}) {
-        return dataSources().blogAPI().posts.find(2050)
+    post(_, {data}, {dataSources, app}, info) {
+        return dataSources().blogAPI().posts.show(data.id, {app}, info)
     },
-    posts(_, {query}, {dataSources}, info) {
-        return dataSources().blogAPI().posts.all(query, info)
+    posts(_, {query}, {dataSources, user, auth, app}, info) {
+        return dataSources().blogAPI().posts.index(query, {info, auth, app})
     },
     comments(_, {query}, {dataSources}, info) {
-        return dataSources().blogAPI().comments.all(query, info)
+        return dataSources().blogAPI().comments.index(query, info)
     }
 }
 

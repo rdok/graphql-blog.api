@@ -39,7 +39,7 @@ export default class UserAPI {
             password: 'required',
         })
 
-        const user = await this.findByEmail(data.email)
+        const user = await this.show(data.email)
         const isMatch = await bcryptjs.compare(data.password, user.password)
 
         return isMatch
@@ -62,11 +62,11 @@ export default class UserAPI {
         return this.prisma.mutation.deleteUser({where: {id: user.id}}, info)
     }
 
-    findByEmail = async (email, info) => {
+    show = async (email, info) => {
         return await this.prisma.query.user({where: {email: email}}, info)
     }
 
-    all = (query, info) => {
+    index = (query, info) => {
 
         if (query) {
             query = {

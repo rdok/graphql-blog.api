@@ -102,18 +102,15 @@ input CreateCommentInput {
     text: String!
 }
 
-input UpdateCommentInput {
-    text: String
-}
+input UpdateCommentInput { text: String }
 
 type Query {
     users(query: String): [ User! ] !
     user(data: GetUserInput): User!
-    post: Post!
+    post(data: GetPostInput): Post!
     posts(query: String): [ Post! ] !
     comments: [Comment!]!
 }
 
-input GetUserInput {
-    email: String!
-}
+input GetUserInput { email: String! }
+input GetPostInput { id: String! }
