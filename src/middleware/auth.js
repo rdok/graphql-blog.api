@@ -5,7 +5,7 @@ import User from '../resolvers/User'
 
 const authMiddleware = {Query: {}}
 Object.keys(Query).forEach((key) => {
-    authMiddleware.Query[key] = login
+    authMiddleware.Query[key] = auth
 })
 
 delete authMiddleware.Query.users
@@ -14,7 +14,7 @@ delete authMiddleware.Query.comments
 
 authMiddleware.Mutation = {}
 Object.keys(Mutation).forEach((key) => {
-    authMiddleware.Mutation[key] = login
+    authMiddleware.Mutation[key] = auth
 })
 
 delete authMiddleware.Mutation.login
@@ -22,21 +22,17 @@ delete authMiddleware.Mutation.createUser
 
 authMiddleware.Subscription = {}
 Object.keys(Subscription).forEach((key) => {
-    authMiddleware.Subscription[key] = login
+    authMiddleware.Subscription[key] = auth
 })
 
-authMiddleware.User = {}
-Object.keys(User).forEach((key) => {
-    authMiddleware.User[key] = login
-})
+async function auth(resolve, root, args, context, info) {
 
-console.log(authMiddleware.User)
-async function login(resolve, parent, args, context, info) {
-    const {auth, app} = context
+    if (typeof context.user === 'undefined') {
+        const {auth, app} = context
+        context.user = await auth.userOrFail(app)
+    }
 
-    context.user = await auth.userOrFail(app)
-
-    return resolve(parent, args, context, info)
+    return resolve(root, args, context, info)
 }
 
 export default authMiddleware

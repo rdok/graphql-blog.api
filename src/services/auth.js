@@ -43,9 +43,7 @@ export default class Auth {
 
     async userOrFail(app) {
         let token = await this.extractAuthToken(app)
-
         const decoded = jwt.verify(token, this.secret())
-
         const user = await this.prisma.query.user({where: {id: decoded.id}})
 
         return user ? user

@@ -68,12 +68,17 @@ export default class UserAPI {
         return await this.prisma.query.user({where: {email: email}}, info)
     }
 
-    index = (query, info) => {
+    index = ({query, meta}, info) => {
+        let args = {}
 
         if (query) {
-            query = {where: {OR: [{name_contains: query},]}}
+            args.where = {OR: [{name_contains: query}]}
         }
 
-        return this.prisma.query.users(query, info)
+        if (meta) {
+            args = {...meta, ...args}
+        }
+
+        return this.prisma.query.users(args, info)
     }
 }

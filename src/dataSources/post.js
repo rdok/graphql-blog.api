@@ -63,7 +63,7 @@ export default class PostAPI {
         }, info)
     }
 
-    index = async (query, {info, auth, app}) => {
+    index = async ({query, meta}, {auth, app}, info) => {
         let input = {where: {published: true}}
         const user = await auth.user(app)
         const filterWhere = {OR: [{title_contains: query}, {body_contains: query},]}
@@ -80,6 +80,11 @@ export default class PostAPI {
             }
         }
 
+        if (meta) {
+            input = {...input, ...meta}
+        }
+
+        console.log(input)
         return this.prisma.query.posts(input, info)
     }
 

@@ -1,8 +1,8 @@
 const User = {
     email(parent, args, {user}) {
-        const emailOwnedByLoggedInUser = user && user.email === parent.email
+        const ownedByUser = user && user.email === parent.email
 
-        return emailOwnedByLoggedInUser ? user.email : null
+        return ownedByUser ? user.email : null
     },
     posts: {
         fragment: 'fragment AuthorId on User { id }',

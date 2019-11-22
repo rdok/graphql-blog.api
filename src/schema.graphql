@@ -108,13 +108,20 @@ input CreateCommentInput {
 input UpdateCommentInput { text: String }
 
 type Query {
-    users(query: String): [ User! ] !
+    users(query: String, meta: MetaInput): [ User! ] !
     loggedInUser: User!
     user(data: GetUserInput): User!
     post(data: GetPostInput): Post!
-    posts(query: String): [ Post! ] !
-    comments: [Comment!]!
+    posts(query: String, meta: MetaInput): [ Post! ] !
+    comments(meta: MetaInput): [Comment!]!
 }
 
 input GetUserInput { email: String! }
 input GetPostInput { id: String! }
+input MetaInput {
+    skip: Int,
+    after: String,
+    before: String,
+    first: Int,
+    last: Int
+}
