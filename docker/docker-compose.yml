@@ -8,6 +8,6 @@ services:
       - POSTGRES_PASSWORD
       - NODE_ENV
       - VIRTUAL_PORT
-      - PRISMA_CLOUD_SESSION_KEY
+      - PRISMA_SECRET
       - PRISMA_ENDPOINT
       - JWT_AUTH_SECRET

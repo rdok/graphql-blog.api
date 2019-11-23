@@ -12,7 +12,7 @@ pipeline {
         NODE_ENV = 'production'
         JWT_AUTH_SECRET = credentials('jwt-auth-secret')
         PRISMA_ENDPOINT = credentials('prisma-endpoint')
-        PRISMA_CLOUD_SESSION_KEY = credentials('prisma-token')
+        PRISMA_SECRET = credentials('prisma-token')
     }
     stages {
         stage('Build & Deploy') {
