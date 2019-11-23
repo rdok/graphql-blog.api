@@ -4,4 +4,4 @@ projects:
     extensions:
       prisma: "./prisma.yml"
       endpoints:
-        default: 'http://prisma:4466'
+        default: ${env:PRISMA_ENDPOINT}

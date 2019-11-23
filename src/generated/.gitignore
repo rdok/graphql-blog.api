@@ -1,2 +1,8 @@
 *
 !.gitignore
+
+# Infrastructure value
+# By commiting the schema, there is no need to generate this when deploying.
+# This decreases the possible down time between docker generating the
+# image & deploying prisma & fetching the new schema
+!prisma.graphql

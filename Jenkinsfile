@@ -9,16 +9,17 @@ pipeline {
         LETSENCRYPT_EMAIL = credentials('rdok-email')
         DEFAULT_EMAIL = credentials('rdok-email')
         COMPOSE_PROJECT_NAME = 'graphql-blog-api'
-        POSTGRES_PASSWORD = credentials('database-password')
         NODE_ENV = 'production'
-        JWT_AUTH_SECRET = credentials('jwt-auth')
-        PRISMA_RN = credentials('prisma-resource-name')
-        PRISMA_SECRET = credentials('prisma')
+        JWT_AUTH_SECRET = credentials('jwt-auth-secret')
+        PRISMA_ENDPOINT = credentials('prisma-endpoint')
+        PRISMA_CLOUD_SESSION_KEY = credentials('prisma-token')
     }
     stages {
         stage('Deploy') { 
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
+
+
                 ./docker/up.sh production
               '''
         } } }

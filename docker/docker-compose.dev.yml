@@ -11,19 +11,42 @@ services:
       - "${DEV_NPM_GLOBAL_CACHE}:/home/node/.npm-global"
     ports:
       - "${VIRTUAL_PORT}:${VIRTUAL_PORT}"
-    command: sh -c "
-      npm install -g prisma
-      && npm install
-      && ./docker/wait-for-it.sh 'prisma:4466'
-      && prisma deploy
-      && npm run get-schema
-      && npm run ${NODE_ENV}
-      "
+    command: tail -f /dev/null
 
   db:
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD
+    volumes:
+      - db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   prisma:
+    image: prismagraphql/prisma:1.34
+    restart: always
+    depends_on:
+      - db
     ports:
       - "4466:4466"
+    environment:
+      PRISMA_CONFIG: |
+        port: 4466
+        # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+        # managementApiSecret: my-secret
+        databases:
+          default:
+            connector: postgres
+            host: db
+            database: postgres
+            # schema: public
+            user: postgres
+            password: "$POSTGRES_PASSWORD"
+            ssl: false
+            rawAccess: true
+            port: "5432"
+            migrations: true
+
+volumes:
+  db:
