@@ -5,19 +5,14 @@ PROJECT_DIR="$(
   pwd -P
 )/.."
 
-docker-prisma-img-build() {
-  docker build --tag rdok/graphql-blog-api:master . \
-    -f "${PROJECT_DIR}/docker/api/Dockerfile"
-}
-
 prisma-deploy() {
   docker run --rm \
-    -e PRISMA_CLOUD_SESSION_KEY="$PRISMA_CLOUD_SESSION_KEY" \
-    -e PRISMA_ENDPOINT="$PRISMA_ENDPOINT" \
-    rdok/graphql-blog-api:master /bin/sh -c "
-    prisma login
-    prisma deploy
-"
+    --env PRISMA_CLOUD_SESSION_KEY="$PRISMA_CLOUD_SESSION_KEY" \
+    --env PRISMA_ENDPOINT="$PRISMA_ENDPOINT" \
+    rdok/graphql-blog-api:prisma /bin/sh -c "
+      prisma login
+      prisma deploy
+    "
 }
 
 docker-compose-app() {
@@ -28,9 +23,12 @@ docker-compose-app() {
     "$@"
 }
 
-docker-prisma-img-build
-docker-compose-app build
+# Infrastructure docker api image
+docker build --tag rdok/graphql-blog-api:infrastructure . -f "${PROJECT_DIR}/docker/api/Dockerfile.infrastructure"
+# Prisma Image to deploy new schema
+docker build --tag rdok/graphql-blog-api:prisma . -f "${PROJECT_DIR}/docker/api/Dockerfile.prisma"
 
+docker-compose-app build
 # Optimized for the least downtime
 prisma-deploy
 docker-compose-app down --remove-orphans

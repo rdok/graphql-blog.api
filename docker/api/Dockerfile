@@ -1,12 +1,11 @@
-FROM rdok/graphql-blog-api:build
+FROM rdok/graphql-blog-api:infrastructure
 
 RUN npm install -g prisma
 
 COPY --chown=node:node package.json package-lock.json ./
 RUN npm install --production
 
-COPY --chown=node:node . /home/node/workbench
-RUN npm run build && mv dist /home/node/app && rm -rf /home/node/workbench
+COPY --chown=node:node . /home/node/app
+RUN npm run build
 
-WORKDIR /home/node/app
 CMD ["npm", "run", "production"]

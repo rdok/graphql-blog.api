@@ -15,7 +15,7 @@ pipeline {
         PRISMA_CLOUD_SESSION_KEY = credentials('prisma-token')
     }
     stages {
-        stage('Deploy') { 
+        stage('Build & Deploy') {
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
                 ./docker/up-prod.sh

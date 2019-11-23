@@ -28,7 +28,6 @@ docker exec -it $containerName npm install -g prisma
 docker exec -it $containerName npm install
 docker exec -it $containerName /bin/sh -c "
   ./docker/wait-for-it.sh 'prisma:4466'
-  prisma deploy
   npm run get-schema
   npm run dev
 "
