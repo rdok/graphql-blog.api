@@ -84,7 +84,6 @@ export default class PostAPI {
             input = {...input, ...meta}
         }
 
-        console.log(input)
         return this.prisma.query.posts(input, info)
     }
 

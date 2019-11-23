@@ -19,8 +19,4 @@ main() {
 main "${1}" build
 main "${1}" down --remove-orphans
 
-if [ "${1}" = "dev" ]; then
-  main "${1}" up
-else
-  main "${1}" up --detach
-fi
+main "${1}" up --detach

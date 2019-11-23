@@ -14,6 +14,11 @@ $ `./docker/up.sh dev`
 
 e.g. `docker logs graphql-blog-api_api_1` 
 
-### Info
-- Generate auth token for accessing local prisma $ `prisma token`. Pass this value as an authorization header (bearer)
+
+## Infrastructure
+Initially the infrastructure was setup on a custom Linux machine. However, because the prisma docker container is quite memory expensive, and with this project being for hobby purposes; both the prisma and the database docker services were moved to heroku & prisma cloud.
+
+Reference to the initial setup; was quite useful & good learning opportunity for future reference.
+
+https://github.com/rdok/graphql-blog.api/tree/v1.0.0
 

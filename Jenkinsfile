@@ -8,11 +8,12 @@ pipeline {
         LETSENCRYPT_HOST = 'api.graphql-blog.rdok.dev'
         LETSENCRYPT_EMAIL = credentials('rdok-email')
         DEFAULT_EMAIL = credentials('rdok-email')
-        PRISMA_SECRET = credentials('graphql-blog-api-prisma-secret')
         COMPOSE_PROJECT_NAME = 'graphql-blog-api'
         POSTGRES_PASSWORD = credentials('database-password')
         NODE_ENV = 'production'
-        JWT_AUTH_SECRET = credentials('graphql-blog-api-auth-secret')
+        JWT_AUTH_SECRET = credentials('jwt-auth')
+        PRISMA_RN = credentials('prisma-resource-name')
+        PRISMA_SECRET = credentials('prisma')
     }
     stages {
         stage('Deploy') { 
