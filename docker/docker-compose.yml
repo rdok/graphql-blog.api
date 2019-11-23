@@ -11,4 +11,3 @@ services:
       - PRISMA_CLOUD_SESSION_KEY
       - PRISMA_ENDPOINT
       - JWT_AUTH_SECRET
-

@@ -11,7 +11,9 @@ docker-prisma-img-build() {
 }
 
 prisma-deploy() {
-  docker run --rm --env PRISMA_CLOUD_SESSION_KEY="$PRISMA_CLOUD_SESSION_KEY" \
+  docker run --rm \
+    -e PRISMA_CLOUD_SESSION_KEY="$PRISMA_CLOUD_SESSION_KEY" \
+    -e PRISMA_ENDPOINT="$PRISMA_ENDPOINT" \
     rdok/graphql-blog-api:master /bin/sh -c "
     prisma login
     prisma deploy
