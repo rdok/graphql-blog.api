@@ -1,3 +1,5 @@
+import '@babel/polyfill'
+
 import {GraphQLServer} from 'graphql-yoga'
 
 import UserAPI from './dataSources/user'
