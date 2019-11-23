@@ -18,9 +18,7 @@ pipeline {
         stage('Deploy') { 
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
-
-
-                ./docker/up.sh production
+                ./docker/up-prod.sh
               '''
         } } }
         stage('Health Check') { 
