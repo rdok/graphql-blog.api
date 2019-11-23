@@ -8,4 +8,4 @@ RUN npm install --production
 COPY --chown=node:node . /home/node/app
 RUN npm run build
 
-CMD ["npm", "run", "${NODE_ENV}"]
+CMD ["npm", "run", "production"]
