@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'rdok.dev' }
+    agent { label 'linux' }
     triggers { cron('H H(18-19) * * *') }
     options { buildDiscarder( logRotator( numToKeepStr: '5' ) ) }
     environment {
@@ -15,28 +15,23 @@ pipeline {
         PRISMA_SECRET = credentials('prisma-token')
     }
     stages {
-        stage('Build') {
+        stage('Build & Test') {
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
+                # TODO: use docker registry to remove the need of rebuilding
                 ./docker/build-production.sh
-              '''
-        } } }
-        stage('Test') {
-           steps { ansiColor('xterm') {
-              sh '''#!/bin/bash
                 ./docker/test.sh production
               '''
         } } }
-        stage('Deploy') {
+        stage('Build & Deploy') {
+           agent { label "rdok.dev" }
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
+                ./docker/build-production.sh
                 ./docker/up-production.sh
               '''
         } } }
-        stage('Health Check') { 
-            agent { label "linux" }
-            steps { build 'api-health-check' }
-        } 
+        stage('Health Check') { steps { build 'api-health-check' } }
     }
     post {
         failure {
