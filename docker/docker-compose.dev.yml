@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./docker/api/Dockerfile.infrastructure
+      dockerfile: ./docker/api/Dockerfile-infrastructure
     volumes:
       - ".:/home/node/app"
       - "${DEV_NPM_CACHE}:/home/node/.npm"

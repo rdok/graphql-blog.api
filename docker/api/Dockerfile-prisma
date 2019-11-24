@@ -1,0 +1,6 @@
+FROM rdok/prisma-cli:latest
+
+COPY --chown=node:node . /home/node/app
+
+# Using image instead of sharing volumes due to Jenkins running on docker,
+# setting up the path would stop making this infrastructure design agnostic.

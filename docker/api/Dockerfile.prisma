@@ -1,5 +1,0 @@
-FROM rdok/graphql-blog-api:infrastructure
-
-RUN npm install -g prisma
-
-COPY --chown=node:node . /home/node/app
