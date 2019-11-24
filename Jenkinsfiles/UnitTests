@@ -1,0 +1,35 @@
+pipeline {
+    agent { label 'linux' }
+    triggers { cron('H H(18-19) * * *') }
+    options { buildDiscarder( logRotator( numToKeepStr: '5' ) ) }
+    environment {
+        VIRTUAL_PORT = '4000'
+        COMPOSE_PROJECT_NAME = 'graphql-blog-api'
+        NODE_ENV = 'dev'
+        JWT_AUTH_SECRET='secret'
+        PRISMA_ENDPOINT='http://prisma:4466/default/test'
+        PRISMA_SECRET='secret'
+        POSTGRES_PASSWORD='secret'
+    }
+    stages {
+        stage('Test') {
+           steps { ansiColor('xterm') {
+              sh '''#!/bin/bash
+               docker network create nginx-proxy
+                  ./docker/test.sh production
+               docker network rm nginx-proxy
+              '''
+        } } }
+        stage('Trigger Deploy') { steps { build 'graphql-blog/api' } }
+    }
+    post {
+        failure {
+            slackSend color: '#FF0000',
+            message: "@here Failed: <${env.BUILD_URL}console | ${env.JOB_NAME}#${env.BUILD_NUMBER}>"
+        }
+        fixed {
+            slackSend color: 'good',
+            message: "@here Fixed: <${env.BUILD_URL}console | ${env.JOB_NAME}#${env.BUILD_NUMBER}>"
+        }
+    }
+}

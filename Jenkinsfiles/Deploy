@@ -1,6 +1,5 @@
 pipeline {
-    agent { label 'linux' }
-    triggers { cron('H H(18-19) * * *') }
+    agent { label 'rdok.dev' }
     options { buildDiscarder( logRotator( numToKeepStr: '5' ) ) }
     environment {
         VIRTUAL_HOST = 'api.graphql-blog.rdok.dev'
@@ -15,17 +14,15 @@ pipeline {
         PRISMA_SECRET = credentials('prisma-token')
     }
     stages {
-        stage('Test') {
-           steps { ansiColor('xterm') {
-              sh '''#!/bin/bash
-                  ./docker/test.sh dev
-              '''
-        } } }
-        stage('Build & Deploy') {
-           agent { label "rdok.dev" }
+        stage('Build') {
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
                 ./docker/build-production.sh
+              '''
+        } } }
+        stage('Deploy') {
+           steps { ansiColor('xterm') {
+              sh '''#!/bin/bash
                 ./docker/up-production.sh
               '''
         } } }
