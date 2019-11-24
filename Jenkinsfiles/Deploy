@@ -26,7 +26,12 @@ pipeline {
                 ./docker/up-production.sh
               '''
         } } }
-        stage('Health Check') { steps { build 'api-health-check' } }
+        stage('Health Checks') {
+            steps {
+                build 'api-health-check'
+                build 'db-health-check'
+            }
+        }
     }
     post {
         failure {

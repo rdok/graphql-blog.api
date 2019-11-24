@@ -8,6 +8,7 @@
 - [Jenkins CI/CD](https://jenkins.rdok.dev/view/Training/job/graphql-blog/)
 - [Docker for Web Node Server & DNS & SSL](https://github.com/rdok/graphql-blog.api/tree/master/docker)
 - [Alternative Approach: All services through docker](https://github.com/rdok/graphql-blog.api/tree/v1.0.0)
+- [Custom Docker Images](https://hub.docker.com/repository/docker/rdok/prisma-cli)
 - [Udemy - The Modern GraphQL Bootcamp](https://www.udemy.com/course/graphql-bootcamp/)
 
 
