@@ -15,12 +15,10 @@ pipeline {
         PRISMA_SECRET = credentials('prisma-token')
     }
     stages {
-        stage('Build & Test') {
+        stage('Test') {
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
-                # TODO: use docker registry to remove the need of rebuilding
-                ./docker/build-production.sh
-                ./docker/test.sh production
+                  ./docker/test.sh dev
               '''
         } } }
         stage('Build & Deploy') {
