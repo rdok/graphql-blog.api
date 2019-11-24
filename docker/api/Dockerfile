@@ -1,3 +1,4 @@
+# The final production image which production code is deployed upon.
 FROM rdok/graphql-blog-api:infrastructure
 
 COPY --chown=node:node package.json package-lock.json ./

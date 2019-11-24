@@ -1,11 +1,6 @@
 #!/bin/bash
-PROJECT_DIR="$(
-  # shellcheck disable=SC2164
-  cd "$(dirname "$0")"
-  pwd -P
-)/.."
 # shellcheck source=docker/lib.sh
-source "${PROJECT_DIR}/docker/lib.sh"
+source "./docker/lib.sh"
 
 if [ $# -eq 0 ]; then
   echo "Required argument missing: production or dev"

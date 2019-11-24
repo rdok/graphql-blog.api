@@ -1,3 +1,5 @@
+# Set up the basic structure design for the production code.
+
 FROM node:12-alpine
 
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global

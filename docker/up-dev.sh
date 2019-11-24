@@ -1,9 +1,7 @@
 #!/bin/bash
-PROJECT_DIR="$(
-  cd "$(dirname "$0")"
-  pwd -P
-)/.."
-source "${PROJECT_DIR}/docker/lib.sh"
+source "./docker/lib.sh"
+
+build-infrastructure-img
 
 docker-compose-dev build
 docker-compose-dev down --remove-orphans
@@ -21,7 +19,10 @@ docker exec -it $containerName /bin/sh -c "
   prisma deploy
   echo '---> Token'
   prisma token
+  # due to bug https://github.com/prisma/prisma/issues/4419
+  export PRISMA_ENDPOINT=http://prisma:4466/default/test
   prisma deploy -e .env.testing
+  export PRISMA_ENDPOINT=http://prisma:4466/
   npm run get-schema
   npm run dev
 "

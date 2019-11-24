@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js --exec babel-node --ext js,graphql",
     "test": "jest",
+    "test-watch": "jest --watch",
     "build": "babel ./src --out-dir ./dist --copy-files",
     "production": "node dist/index.js",
     "get-schema": "graphql get-schema -p 'GraphQLBlog'"

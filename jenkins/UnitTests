@@ -20,7 +20,7 @@ pipeline {
                docker network rm nginx-proxy
               '''
         } } }
-        stage('Trigger Deploy') { steps { build 'graphql-blog/api' } }
+        stage('Deploy') { steps { build 'graphql-blog/api' } }
     }
     post {
         failure {
