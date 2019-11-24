@@ -14,10 +14,13 @@ services:
     command: tail -f /dev/null
 
   db:
-    image: postgres:12-alpine
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile.dev
     restart: always
     environment:
-      - POSTGRES_PASSWORD
+      - DB_NAME
+      - DB_NAME_TEST
     volumes:
       - db:/var/lib/postgresql/data
     ports:
