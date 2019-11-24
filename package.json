@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js --exec babel-node --ext js,graphql",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "babel ./src --out-dir ./dist --copy-files",
     "production": "node dist/index.js",
     "get-schema": "graphql get-schema -p 'GraphQLBlog'"
@@ -26,6 +26,7 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/node": "^7.7.4",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.4"
   },
   "dependencies": {

@@ -15,10 +15,22 @@ pipeline {
         PRISMA_SECRET = credentials('prisma-token')
     }
     stages {
-        stage('Build & Deploy') {
+        stage('Build') {
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
-                ./docker/up-prod.sh
+                ./docker/build-production.sh
+              '''
+        } } }
+        stage('Test') {
+           steps { ansiColor('xterm') {
+              sh '''#!/bin/bash
+                ./docker/test.sh production
+              '''
+        } } }
+        stage('Deploy') {
+           steps { ansiColor('xterm') {
+              sh '''#!/bin/bash
+                ./docker/up-production.sh
               '''
         } } }
         stage('Health Check') { 

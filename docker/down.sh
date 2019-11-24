@@ -1,12 +1,8 @@
 #!/bin/bash
+PROJECT_DIR="$(
+  cd "$(dirname "$0")"
+  pwd -P
+)/.."
+source "${PROJECT_DIR}/docker/lib.sh"
 
-SCRIPT_DIR="$(
-cd "$(dirname "$0")"
-pwd -P
-)/../"
-
-docker-compose \
-   --project-directory "${SCRIPT_DIR}" \
-   --file ./docker/docker-compose.yml \
-   --file ./docker/docker-compose.dev.yml \
-   down
+docker-compose-production down
