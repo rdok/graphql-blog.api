@@ -24,7 +24,7 @@ $ `./docker/up-dev.sh`
 
 When you want to execute a command you may use the running container 
 `graphql-blog-api_api_1`. E.g.: 
-$ `docker exec -it graphql-blog-api_api_1 {npm run dev|prisma deploy|etc}`
+$ `docker exec -it graphql-blog-api_api_1 {npm install|prisma deploy|etc}`
 
 
 #### Useful commands 
