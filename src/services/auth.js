@@ -70,19 +70,12 @@ export default class Auth {
     }
 
     isValidPassword(password) {
+        const commonPasswords = ['123456', 'qwerty', 'password', '111111', 'abc123']
+        const includesInPassword = (element) => password.includes(element)
 
-        if (!/[a-zA-Z]+/.test(password)) {
-            return false
-        }
-
-        if (!/\d+/.test(password)) {
-            return false
-        }
-
-        if (password.length < 7) {
-            return false
-        }
-
-        return true
+        return /[a-zA-Z]+/.test(password)
+            && /\d+/.test(password)
+            && password.length >= 7
+            && !commonPasswords.some(includesInPassword)
     }
 }
