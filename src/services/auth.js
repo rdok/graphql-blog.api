@@ -68,4 +68,21 @@ export default class Auth {
 
         return {user, token}
     }
+
+    isValidPassword(password) {
+
+        if (!/[a-zA-Z]+/.test(password)) {
+            return false
+        }
+
+        if (!/\d+/.test(password)) {
+            return false
+        }
+
+        if (password.length < 7) {
+            return false
+        }
+
+        return true
+    }
 }
