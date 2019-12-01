@@ -62,9 +62,12 @@ export default class Auth {
         return await bcryptjs.compare(password, hash)
     }
 
-    generateAuthPayload(app, user) {
+    generateAuthPayload(app = null, user) {
         const token = jwt.sign({id: user.id}, this.secret(), {expiresIn: '48h'})
-        app.request.headers.authorization = token
+
+        if (app) {
+            app.request.headers.authorization = token
+        }
 
         return {user, token}
     }

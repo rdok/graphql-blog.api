@@ -1,8 +1,9 @@
 import prisma from '../../src/prisma'
 import bcrypt from 'bcryptjs'
 import faker from 'faker'
+import Auth from "../../src/services/auth";
 
-export default function createUser(data) {
+export default async function createUser(data) {
     const factoryData = {
         name: faker.name.findName(),
         email: faker.internet.email(),
@@ -15,5 +16,10 @@ export default function createUser(data) {
 
     data = Object.assign(factoryData, data)
 
-    return prisma.mutation.createUser({data})
+    const user = await prisma.mutation.createUser({data})
+
+    const auth = new Auth({prisma, validator: {}})
+    user.token = auth.generateAuthPayload(null, user).token
+
+    return user
 }
