@@ -4,3 +4,7 @@ beforeEach(async () => {
     await prisma.mutation.deleteManyUsers()
 })
 
+beforeEach(async () => {
+    await prisma.mutation.deleteManyUsers()
+})
+
