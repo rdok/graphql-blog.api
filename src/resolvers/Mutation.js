@@ -5,7 +5,7 @@ const Mutation = {
     createUser(_, {data}, context, info) {
         return context.dataSources().blogAPI().users.create(data, context, info)
     },
-    login(_, {data}, {dataSources, app}, info) {
+    login(_, {data}, {dataSources, app}) {
         return dataSources().blogAPI().users.login(data, {app})
     },
     updateUser(_, {data}, {dataSources, user}) {

@@ -2,7 +2,7 @@ import createPost from './factories/post'
 import {gql} from 'apollo-boost'
 
 describe('Post', () => {
-    test('a guest may view posts', async () => {
+    test('should expose published posts', async () => {
         const post1 = await createPost({published: false})
         const post2 = await createPost({published: true})
 

@@ -3,7 +3,7 @@ import prisma from '../src/prisma'
 import createUser from "./factories/user";
 
 describe('User', () => {
-    test('a guest may register an account', async () => {
+    test('should allow user registration', async () => {
         const createUser = gql` mutation CreateUser {
             createUser(data: {
                 name: "expectedName"
@@ -33,7 +33,7 @@ describe('User', () => {
         })
     })
 
-    test('a guest may view users public profiles', async () => {
+    test('should expose users public profile', async () => {
         const user1 = await createUser()
         const user2 = await createUser()
         const query = gql`query { users { name email } }`
@@ -47,5 +47,30 @@ describe('User', () => {
             {"__typename": "User", name: user1.name, email: null},
             {"__typename": "User", name: user2.name, email: null},
         ])
+    })
+
+    test('it should guard against invalid login attempts', async () => {
+        const mutation = gql`mutation {
+            login(data: {email:"invalid" password: "invalid"})
+            { user { id } token }
+        }`
+
+        await expect(
+            global.httpClient.mutate({mutation})
+        ).rejects.toThrow('GraphQL error')
+    })
+
+    test('it should login', async () => {
+        const user = await createUser({password: 'cyberpunk2077'})
+        const mutation = gql`mutation {
+            login(data: {email:"${user.email}" password: "cyberpunk2077"})
+            { token }
+        }`
+
+        const response = await global.httpClient.mutate({mutation})
+
+        expect(response).toHaveProperty('data')
+        expect(response.data).toHaveProperty('login')
+        expect(response.data.login).toHaveProperty('token')
     })
 })
