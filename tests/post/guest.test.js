@@ -1,4 +1,4 @@
-import createPost from './factories/post'
+import createPost from '../factories/post'
 import {gql} from 'apollo-boost'
 
 describe('Post', () => {

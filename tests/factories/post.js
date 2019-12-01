@@ -2,9 +2,13 @@ import prisma from '../../src/prisma'
 import faker from 'faker'
 import createUser from "./user";
 
-export default async function createPost(data) {
+export default async function createPost(data, user = null) {
     const info = '{ id title body published author { id } }'
-    const user = await createUser()
+
+    if (!user) {
+        user = await createUser()
+    }
+
     const factoryData = {
         title: faker.lorem.words(),
         body: faker.lorem.sentence(),
