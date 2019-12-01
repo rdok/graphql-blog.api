@@ -1,6 +1,5 @@
 import {gql} from 'apollo-boost'
 import createUser from "../factories/user";
-import prisma from "../../src/prisma";
 
 describe('User Profile', () => {
     test('should expose users public profile', async () => {
