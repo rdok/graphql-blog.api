@@ -13,7 +13,13 @@
   },
   "jest": {
     "globalSetup": "./tests/jest/globalSetup.js",
-    "globalTeardown": "./tests/jest/globalTeardown.js"
+    "globalTeardown": "./tests/jest/globalTeardown.js",
+    "setupFiles": [
+      "./tests/jest/setupClient.js"
+    ],
+    "setupFilesAfterEnv": [
+      "./tests/jest/clearDatabase.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -35,6 +41,7 @@
     "babel-register": "^6.26.0",
     "cross-fetch": "^3.0.4",
     "env-cmd": "^10.0.1",
+    "faker": "^4.1.0",
     "graphql": "^14.5.8",
     "jest": "^24.9.0",
     "nodemon": "^1.19.4"

@@ -1,24 +1,14 @@
-import '@babel/polyfill'
-import 'cross-fetch/polyfill'
 import ApolloBoost, {gql} from 'apollo-boost'
-import prisma from '../../src/prisma'
-
-const client = new ApolloBoost({
-    uri: 'http://api:' + (process.env.TEST_PORT || 4001)
-})
-
-beforeEach(async () => {
-    await prisma.mutation.deleteManyUsers()
-})
+import prisma from '../src/prisma'
 
 describe('User', () => {
-    test('create new', async () => {
+    test('register', async () => {
         const createUser = gql`
             mutation CreateUser {
                 createUser(data: {
-                    name:"expectedName"
-                    email:"expected@email.test"
-                    password:"cyberpunk2077"
+                    name: "expectedName"
+                    email: "expected@email.test"
+                    password: "cyberpunk2077"
                 })
                 {  user { id name email }  token }
             }
@@ -27,7 +17,11 @@ describe('User', () => {
         let user = await prisma.query.user({where: {email: 'expected@email.test'}})
         expect(user).toBeNull()
 
-        const authPayload = await client.mutate({mutation: createUser})
+        const response = await global.httpClient.mutate({mutation: createUser})
+        expect(response).toHaveProperty('data')
+        expect(response.data).toHaveProperty('createUser')
+        expect(response.data.createUser).toHaveProperty('user')
+        expect(response.data.createUser).toHaveProperty('token')
 
         user = await prisma.query.user(
             {where: {email: 'expected@email.test'}},

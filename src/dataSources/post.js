@@ -69,7 +69,6 @@ export default class PostAPI {
         const filterWhere = {OR: [{title_contains: query}, {body_contains: query},]}
 
         if (!user) {
-            input.where = {published: true}
             if (query) {
                 input.where.OR = filterWhere.OR
             }
