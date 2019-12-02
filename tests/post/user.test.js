@@ -53,20 +53,27 @@ describe('Post', () => {
         `
 
         const response = await global.httpClientFor(user).mutate({mutation})
-        expect(response).toEqual({
-            data: {
-                updatePost: {
-                    __typename: "Post",
-                    ...newData
-                }
-            }
-        })
+        const expected = {data: {updatePost: {__typename: "Post", ...newData}}}
+        expect(response).toEqual(expected)
 
         const databaseUpdated = await prisma.exists.Post(newData)
         expect(databaseUpdated).toBeTruthy()
     })
 
-    test.skip('should not update a post not owned', () => {
+    test('should not update a post not owned', async () => {
+        const user = await createUser()
+        const post = await createPost({published: false})
 
+        const mutation = gql`mutation {
+            updatePost(id:"${post.id}" data:{ published:true }) { id }
+        }`
+
+        try {
+            await global.httpClientFor(user).mutate({mutation})
+        } catch (error) {
+        }
+
+        const expected = `Could not find type 'posts' with 'id=${post.id}' and 'author.id=${user.id}`
+        expect(error.graphQLErrors[0].message.id[0]).toEqual(expected)
     })
 })
