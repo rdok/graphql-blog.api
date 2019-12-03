@@ -28,11 +28,46 @@ describe('Post', () => {
         expect(postExists).toBeFalsy()
     })
 
-    test.skip('guests should delete a post', async () => {
+    test('guests should not delete a post', async () => {
+        const post = await createPost()
+        const mutation = gql`mutation { deletePost(id:"${post.id}") { id } }`
 
+        let postExists = await prisma.exists.Post({id: post.id})
+        expect(postExists).toBeTruthy()
+
+        let error
+        try {
+            await global.httpClient.mutate({mutation})
+        } catch (e) {
+            error = e
+        }
+
+        const expected = `This field is required and cannot be empty.`
+        expect(error.graphQLErrors[0].message.authorization[0]).toEqual(expected)
+
+        postExists = await prisma.exists.Post({id: post.id})
+        expect(postExists).toBeTruthy()
     })
 
-    test.skip('users should delete not owned post', async () => {
+    test('users should not delete others post', async () => {
+        const user = await createUser()
+        const post = await createPost()
+        const mutation = gql`mutation { deletePost(id:"${post.id}") { id } }`
 
+        let postExists = await prisma.exists.Post({id: post.id})
+        expect(postExists).toBeTruthy()
+
+        let error
+        try {
+            await global.httpClientFor(user).mutate({mutation})
+        } catch (e) {
+            error = e
+        }
+
+        const expected = `Could not find type 'posts' with 'id=${post.id}' and 'author.id=${user.id}`
+        expect(error.graphQLErrors[0].message.id[0]).toEqual(expected)
+
+        postExists = await prisma.exists.Post({id: post.id})
+        expect(postExists).toBeTruthy()
     })
 })
