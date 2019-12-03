@@ -3,17 +3,19 @@ import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import createPost from "../factories/post";
 
+const mutation = gql`mutation ($id:ID!){ deletePost(id:$id) { id } }`
+
 describe('Post', () => {
 
     test('should delete a post', async () => {
         const user = await createUser()
         const post = await createPost(null, user)
-        const mutation = gql`mutation { deletePost(id:"${post.id}") { id } }`
 
         let postExists = await prisma.exists.Post({id: post.id})
         expect(postExists).toBeTruthy()
 
-        const response = await global.httpClientFor(user).mutate({mutation})
+        const response = await global.httpClientFor(user)
+            .mutate({mutation, variables: {id: post.id}})
 
         expect(response).toEqual({
             data: {
@@ -30,14 +32,13 @@ describe('Post', () => {
 
     test('guests should not delete a post', async () => {
         const post = await createPost()
-        const mutation = gql`mutation { deletePost(id:"${post.id}") { id } }`
 
         let postExists = await prisma.exists.Post({id: post.id})
         expect(postExists).toBeTruthy()
 
         let error
         try {
-            await global.httpClient.mutate({mutation})
+            await global.httpClient.mutate({mutation, variables: {id: post.id}})
         } catch (e) {
             error = e
         }
@@ -52,14 +53,14 @@ describe('Post', () => {
     test('users should not delete others post', async () => {
         const user = await createUser()
         const post = await createPost()
-        const mutation = gql`mutation { deletePost(id:"${post.id}") { id } }`
 
         let postExists = await prisma.exists.Post({id: post.id})
         expect(postExists).toBeTruthy()
 
         let error
         try {
-            await global.httpClientFor(user).mutate({mutation})
+            await global.httpClientFor(user)
+                .mutate({mutation, variables: {id: post.id}})
         } catch (e) {
             error = e
         }
