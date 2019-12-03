@@ -3,6 +3,13 @@ import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import faker from "faker";
 
+const mutation = gql`
+    mutation($data:CreatePostInput!){
+        createPost(data:$data)
+        { id title body published author { id } }
+    }
+`
+
 describe('Post', () => {
 
     test('should create a post', async () => {
@@ -14,18 +21,8 @@ describe('Post', () => {
             published: true,
         }
 
-        const mutation = gql`
-            mutation {
-                createPost(data:{
-                    title:"${data.title}"
-                    body:"${data.body}"
-                    published:${data.published}
-                })
-                { id title body published author { id } }
-            }
-        `
-
-        const response = await global.httpClientFor(user).mutate({mutation})
+        const response = await global.httpClientFor(user)
+            .mutate({mutation, variables: {data: data}})
 
         expect(response).toEqual({
             data: {
