@@ -2,51 +2,55 @@ import {gql} from "apollo-boost";
 import prisma from "../../src/prisma";
 import createUser from "../factories/user";
 
+const mutation = gql` mutation($data:CreateUserInput!) {
+    createUser(data: $data)
+    {  user { id name email }  token }
+} `
+
 describe('User Registration', () => {
 
     test('should allow valid registration', async () => {
-        const createUser = gql` mutation CreateUser {
-            createUser(data: {
-                name: "expectedName"
-                email: "expected@email.test"
-                password: "cyberpunk2077"
-            })
-            {  user { id name email }  token }
-        } `
+        const variables = {
+            data: {
+                name: "expectedName",
+                email: "expected@email.test",
+                password: "cyberpunk2077",
+            }
+        }
 
         let user = await prisma.query.user({where: {email: 'expected@email.test'}})
         expect(user).toBeNull()
 
-        const response = await global.httpClient.mutate({mutation: createUser})
+        const response = await global.httpClient.mutate({mutation, variables})
+
         expect(response).toHaveProperty('data')
         expect(response.data).toHaveProperty('createUser')
         expect(response.data.createUser).toHaveProperty('user')
         expect(response.data.createUser).toHaveProperty('token')
 
         user = await prisma.query.user(
-            {where: {email: 'expected@email.test'}},
+            {where: {email: variables.data.email}},
             '{ email name }'
         )
 
         expect(user).toEqual({
-            name: "expectedName",
-            email: "expected@email.test",
+            name: variables.data.name,
+            email: variables.data.email,
         })
     })
 
     test('should not allow invalid registration', async () => {
-        const mutation = gql` mutation CreateUser {
-            createUser(data: {
-                name: "expectedName"
-                email: "invalid-email"
-                password: "invpas"
-            })
-            {  user { id name email }  token }
-        } `
+        const variables = {
+            data: {
+                name: "any-name",
+                email: "invalid-email",
+                password: "invpas",
+            }
+        }
 
         let error
         try {
-            await global.httpClient.mutate({mutation})
+            await global.httpClient.mutate({mutation, variables})
         } catch (e) {
             error = e
         }
@@ -63,19 +67,17 @@ describe('User Registration', () => {
 
     test('should not allow registration with existing email', async () => {
         const user = await createUser()
-
-        const mutation = gql` mutation CreateUser {
-            createUser(data: {
-                name: "expectedName"
-                email: "${user.email}"
+        const variables = {
+            data: {
+                name: "any-name",
+                email: user.email,
                 password: "cyberpunk2077"
-            })
-            {  user { id name email }  token }
-        } `
+            }
+        }
 
         let error
         try {
-            await global.httpClient.mutate({mutation})
+            await global.httpClient.mutate({mutation, variables})
         } catch (e) {
             error = e
         }

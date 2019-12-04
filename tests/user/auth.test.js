@@ -4,19 +4,21 @@ import Auth from '../../src/services/auth'
 
 const auth = new Auth({prisma: null})
 
+const mutation = gql`mutation ($data:LoginInput!) {
+    login(data: $data) { user { id } token }
+}`
+// login(data: {email:"${user.email}" password: "cyberpunk2077inval"})
+
 describe('User Auth', () => {
     test('it should guard against invalid login attempts', async () => {
+        const password = 'invalid-password'
         const user = await createUser()
 
-        const mutation = gql`mutation {
-            login(data: {email:"${user.email}" password: "cyberpunk2077inval"})
-            { user { id } token }
-        }`
-
         let error
+        const variables = {data: {email: user.email, password}}
 
         try {
-            await global.httpClient.mutate({mutation});
+            await global.httpClient.mutate({mutation, variables});
         } catch (e) {
             error = e
         }
@@ -28,13 +30,11 @@ describe('User Auth', () => {
     })
 
     test('it should login', async () => {
-        const user = await createUser({password: 'cyberpunk2077'})
-        const mutation = gql`mutation {
-            login(data: {email:"${user.email}" password: "cyberpunk2077"})
-            { token }
-        }`
+        const password = 'secret2077'
+        const user = await createUser({password})
+        const variables = {data: {email: user.email, password}}
 
-        const response = await global.httpClient.mutate({mutation})
+        const response = await global.httpClient.mutate({mutation, variables})
 
         expect(response).toHaveProperty('data')
         expect(response.data).toHaveProperty('login')

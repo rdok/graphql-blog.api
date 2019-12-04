@@ -4,36 +4,33 @@ import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import faker from "faker";
 
+const mutation = gql`
+    mutation ($id: ID!, $data:UpdatePostInput!) {
+        updatePost(id:$id data: $data) { id title body published }
+    }
+`
+
 describe('Post', () => {
 
     test('should update a post', async () => {
         const user = await createUser()
         const post = await createPost({published: false}, user)
 
-        const newData = {
-            id: post.id,
+        let data = {
             title: faker.lorem.words(),
             body: faker.lorem.sentence(),
             published: true,
         }
 
-        const mutation = gql`
-            mutation {
-                updatePost(id:"${newData.id}" data:{
-                    title:"${newData.title}"
-                    body:"${newData.body}"
-                    published:${newData.published}
-                }) {
-                    id title body published
-                }
-            }
-        `
+        const response = await global.httpClientFor(user)
+            .mutate({mutation, variables: {id: post.id, data: data}})
 
-        const response = await global.httpClientFor(user).mutate({mutation})
-        const expected = {data: {updatePost: {__typename: "Post", ...newData}}}
+        data.id = post.id
+
+        const expected = {data: {updatePost: {__typename: "Post", ...data}}}
         expect(response).toEqual(expected)
 
-        const databaseUpdated = await prisma.exists.Post(newData)
+        const databaseUpdated = await prisma.exists.Post(data)
         expect(databaseUpdated).toBeTruthy()
     })
 
@@ -41,13 +38,11 @@ describe('Post', () => {
         const user = await createUser()
         const post = await createPost({published: false})
 
-        const mutation = gql`mutation {
-            updatePost(id:"${post.id}" data:{ published:true }) { id }
-        }`
+        const variables = {id: post.id, data:{ published:true } }
 
         let error
         try {
-            await global.httpClientFor(user).mutate({mutation})
+            await global.httpClientFor(user).mutate({mutation, variables})
         } catch (e) {
             error = e
         }
