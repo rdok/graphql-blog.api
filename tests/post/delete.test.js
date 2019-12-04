@@ -16,12 +16,7 @@ describe('Post', () => {
             .mutate({mutation: deletePost, variables: {id: post.id}})
 
         expect(response).toEqual({
-            data: {
-                deletePost: {
-                    __typename: "Post",
-                    id: response.data.deletePost.id,
-                }
-            }
+            data: {deletePost: {__typename: "Post", id: post.id,}}
         })
 
         postExists = await prisma.exists.Post({id: post.id})

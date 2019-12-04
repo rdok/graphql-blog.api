@@ -6,11 +6,11 @@ const createPost = gql`
     mutation($data:CreatePostInput!){
         createPost(data:$data)
         { id title body published author { id } }
-}`
+    }`
 const updatePost = gql`
     mutation ($id: ID!, $data:UpdatePostInput!) {
         updatePost(id:$id data: $data) { id title body published }
-}`
+    }`
 
 const users = gql`query { users { name email } }`
 const loggedInUser = gql`query { loggedInUser { id name email } }`
@@ -23,9 +23,10 @@ const createUser = gql` mutation($data:CreateUserInput!) {
 } `
 
 const comments = gql`query { comments { id text post { id } author { id } } }`
+const deleteComment = gql`mutation ($id:ID!){ deleteComment(id:$id) { id } }`
 
 export {
     createPost, posts, deletePost, updatePost,
     login, users, loggedInUser, createUser,
-    comments
+    comments, deleteComment
 }

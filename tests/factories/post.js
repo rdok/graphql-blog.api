@@ -2,7 +2,7 @@ import prisma from '../../src/prisma'
 import faker from 'faker'
 import createUser from "./user";
 
-export default async function createPost(data, user = null) {
+export default async function createPost(data = {}, user = null) {
     const info = '{ id title body published author { id } }'
 
     if (!user) {
