@@ -1,13 +1,8 @@
-import {gql} from 'apollo-boost'
 import createUser from "../factories/user";
 import Auth from '../../src/services/auth'
+import {login} from '../utils/operations'
 
 const auth = new Auth({prisma: null})
-
-const mutation = gql`mutation ($data:LoginInput!) {
-    login(data: $data) { user { id } token }
-}`
-// login(data: {email:"${user.email}" password: "cyberpunk2077inval"})
 
 describe('User Auth', () => {
     test('it should guard against invalid login attempts', async () => {
@@ -18,7 +13,7 @@ describe('User Auth', () => {
         const variables = {data: {email: user.email, password}}
 
         try {
-            await global.httpClient.mutate({mutation, variables});
+            await global.httpClient.mutate({mutation: login, variables});
         } catch (e) {
             error = e
         }
@@ -34,7 +29,8 @@ describe('User Auth', () => {
         const user = await createUser({password})
         const variables = {data: {email: user.email, password}}
 
-        const response = await global.httpClient.mutate({mutation, variables})
+        const response = await global.httpClient
+            .mutate({mutation: login, variables})
 
         expect(response).toHaveProperty('data')
         expect(response.data).toHaveProperty('login')

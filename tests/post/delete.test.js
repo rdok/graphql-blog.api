@@ -1,9 +1,7 @@
-import {gql} from 'apollo-boost'
 import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import createPost from "../factories/post";
-
-const mutation = gql`mutation ($id:ID!){ deletePost(id:$id) { id } }`
+import {deletePost} from "../utils/operations";
 
 describe('Post', () => {
 
@@ -15,7 +13,7 @@ describe('Post', () => {
         expect(postExists).toBeTruthy()
 
         const response = await global.httpClientFor(user)
-            .mutate({mutation, variables: {id: post.id}})
+            .mutate({mutation: deletePost, variables: {id: post.id}})
 
         expect(response).toEqual({
             data: {
@@ -38,7 +36,8 @@ describe('Post', () => {
 
         let error
         try {
-            await global.httpClient.mutate({mutation, variables: {id: post.id}})
+            await global.httpClient
+                .mutate({mutation: deletePost, variables: {id: post.id}})
         } catch (e) {
             error = e
         }
@@ -60,7 +59,7 @@ describe('Post', () => {
         let error
         try {
             await global.httpClientFor(user)
-                .mutate({mutation, variables: {id: post.id}})
+                .mutate({mutation: deletePost, variables: {id: post.id}})
         } catch (e) {
             error = e
         }

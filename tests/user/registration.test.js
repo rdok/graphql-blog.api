@@ -1,11 +1,6 @@
-import {gql} from "apollo-boost";
 import prisma from "../../src/prisma";
 import createUser from "../factories/user";
-
-const mutation = gql` mutation($data:CreateUserInput!) {
-    createUser(data: $data)
-    {  user { id name email }  token }
-} `
+import {createUser as createUserMutation} from '../utils/operations'
 
 describe('User Registration', () => {
 
@@ -21,7 +16,8 @@ describe('User Registration', () => {
         let user = await prisma.query.user({where: {email: 'expected@email.test'}})
         expect(user).toBeNull()
 
-        const response = await global.httpClient.mutate({mutation, variables})
+        const response = await global.httpClient
+            .mutate({mutation: createUserMutation, variables})
 
         expect(response).toHaveProperty('data')
         expect(response.data).toHaveProperty('createUser')
@@ -50,7 +46,8 @@ describe('User Registration', () => {
 
         let error
         try {
-            await global.httpClient.mutate({mutation, variables})
+            await global.httpClient
+                .mutate({mutation: createUserMutation, variables})
         } catch (e) {
             error = e
         }
@@ -77,7 +74,8 @@ describe('User Registration', () => {
 
         let error
         try {
-            await global.httpClient.mutate({mutation, variables})
+            await global.httpClient
+                .mutate({mutation: createUserMutation, variables})
         } catch (e) {
             error = e
         }

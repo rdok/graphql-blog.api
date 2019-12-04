@@ -1,15 +1,14 @@
 import createPost from '../factories/post'
-import {gql} from 'apollo-boost'
 import createUser from "../factories/user";
-
-const query = gql`query { posts { id title body published author { id } } }`
+import {posts} from '../utils/operations'
 
 describe('Post', () => {
     test('should expose posts of user', async () => {
         const user = await createUser()
         const post1 = await createPost({published: false}, user)
         const post2 = await createPost({published: true}, user)
-        const response = await global.httpClientFor(user).query({query})
+        const response = await global.httpClientFor(user)
+            .query({query: posts})
 
         expect(response.data.posts).toEqual([
             {
@@ -36,15 +35,15 @@ describe('Post', () => {
         const post2 = await createPost({published: true})
 
         // when i make a request to  create one
-        const response = await global.httpClient.query({query})
+        const response = await global.httpClient.query({query: posts})
 
         expect(response).toHaveProperty('data')
         expect(response.data).toHaveProperty('posts')
 
-        const posts = response.data.posts
+        const expectedPosts = response.data.posts
 
-        expect(posts.length).toBe(1)
-        expect(posts[0].published).toBeTruthy()
-        expect(posts[0].id).toBe(post2.id)
+        expect(expectedPosts.length).toBe(1)
+        expect(expectedPosts[0].published).toBeTruthy()
+        expect(expectedPosts[0].id).toBe(post2.id)
     })
 })

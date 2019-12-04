@@ -1,14 +1,9 @@
 import createPost from '../factories/post'
-import {gql} from 'apollo-boost'
 import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import faker from "faker";
+import {updatePost} from "../utils/operations";
 
-const mutation = gql`
-    mutation ($id: ID!, $data:UpdatePostInput!) {
-        updatePost(id:$id data: $data) { id title body published }
-    }
-`
 
 describe('Post', () => {
 
@@ -22,8 +17,10 @@ describe('Post', () => {
             published: true,
         }
 
-        const response = await global.httpClientFor(user)
-            .mutate({mutation, variables: {id: post.id, data: data}})
+        const response = await global.httpClientFor(user).mutate({
+            mutation: updatePost,
+            variables: {id: post.id, data: data}
+        })
 
         data.id = post.id
 
@@ -38,11 +35,14 @@ describe('Post', () => {
         const user = await createUser()
         const post = await createPost({published: false})
 
-        const variables = {id: post.id, data:{ published:true } }
+        const variables = {id: post.id, data: {published: true}}
 
         let error
         try {
-            await global.httpClientFor(user).mutate({mutation, variables})
+            await global.httpClientFor(user).mutate({
+                mutation: updatePost,
+                variables
+            })
         } catch (e) {
             error = e
         }

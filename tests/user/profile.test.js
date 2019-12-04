@@ -1,13 +1,12 @@
-import {gql} from 'apollo-boost'
 import createUser from "../factories/user";
+import {users, loggedInUser} from '../utils/operations'
 
 describe('User Profile', () => {
     test('should expose users public profile', async () => {
         const user1 = await createUser()
         const user2 = await createUser()
-        const query = gql`query { users { name email } }`
 
-        const response = await global.httpClient.query({query})
+        const response = await global.httpClient.query({query: users})
 
         expect(response).toHaveProperty('data')
         expect(response.data).toHaveProperty('users')
@@ -19,9 +18,9 @@ describe('User Profile', () => {
     })
 
     test('should fetch private user profile', async () => {
-        const query = gql`query { loggedInUser { id name email } }`
         const user = await createUser()
-        const response = await global.httpClientFor(user).query({query})
+        const response = await global.httpClientFor(user)
+            .query({query: loggedInUser})
 
         expect(response.data.loggedInUser).toEqual({
             __typename: "User",
