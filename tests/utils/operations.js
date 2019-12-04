@@ -22,8 +22,10 @@ const createUser = gql` mutation($data:CreateUserInput!) {
     {  user { id name email }  token }
 } `
 
+const comments = gql`query { comments { id text post { id } author { id } } }`
 
 export {
     createPost, posts, deletePost, updatePost,
-    login, users, loggedInUser, createUser
+    login, users, loggedInUser, createUser,
+    comments
 }
