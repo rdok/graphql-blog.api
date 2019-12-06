@@ -29,8 +29,13 @@ const createComment = gql` mutation($data:CreateCommentInput!) {
 const comments = gql`query { comments { id text post { id } author { id } } }`
 const deleteComment = gql`mutation ($id:ID!){ deleteComment(id:$id) { id } }`
 
+const subscribeToComments = gql` subscription {
+    comment(data: {mutationIn: [CREATED, UPDATED, DELETED]})
+    { mutation node {id text author {id}}}
+}`
+
 export {
     createPost, posts, deletePost, updatePost,
     login, users, loggedInUser, createUser,
-    createComment, comments, deleteComment
+    createComment, comments, deleteComment, subscribeToComments
 }

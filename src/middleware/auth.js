@@ -1,7 +1,6 @@
 import Query from '../resolvers/Query'
 import Mutation from '../resolvers/Mutation'
 import Subscription from '../resolvers/Subscription'
-import User from '../resolvers/User'
 
 const authMiddleware = {Query: {}}
 Object.keys(Query).forEach((key) => {
@@ -24,6 +23,7 @@ authMiddleware.Subscription = {}
 Object.keys(Subscription).forEach((key) => {
     authMiddleware.Subscription[key] = auth
 })
+delete authMiddleware.Subscription.comment
 
 async function auth(resolve, root, args, context, info) {
 
