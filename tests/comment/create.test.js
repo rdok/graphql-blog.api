@@ -7,6 +7,24 @@ import {createPost, createUser, createComment} from "../factories";
 
 describe('Comment', () => {
 
+    test('should not create comment if not logged in', async () => {
+        const post = await createPost({published: true})
+        const variables = {data: {post: post.id, text: 'comment-text'}}
+
+        let error
+        try {
+            await global.client().mutate({
+                mutation: createCommentOperation,
+                variables
+            })
+        } catch (e) {
+            error = e
+        }
+
+        const expected = `This field is required and cannot be empty.`
+        expect(error.graphQLErrors[0].message.authorization[0]).toEqual(expected)
+    })
+
     test('should create a comment', async () => {
         const user = await createUser()
         const post = await createPost({published: true})
