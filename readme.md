@@ -1,8 +1,11 @@
 # Graphql-Blog.API 
-API Production [![Build Status](https://jenkins.rdok.dev/buildStatus/icon?job=graphql-blog%2Fapi)](https://jenkins.rdok.dev/view/Training/job/graphql-blog/job/api/)
 > Dev project hands-on GraphQL practise and showcasing the full pipeline, from develop to production. 
+>
+API Production [![Build Status](https://jenkins.rdok.dev/buildStatus/icon?job=graphql-blog%2Fapi)](https://jenkins.rdok.dev/view/Training/job/graphql-blog/job/api/) 
 
 API Test [![Build Status](https://jenkins.rdok.dev/buildStatus/icon?job=graphql-blog%2Fapi-test)](https://jenkins.rdok.dev/view/Training/job/graphql-blog/job/api-test/)
+
+[Client](https://graphql-blog.rdok.dev/)
 
 - [GraphQL Yoga](https://github.com/prisma-labs/graphql-yoga)
 - [Prisma Cloud as ORM](https://www.prisma.io/cloud)
