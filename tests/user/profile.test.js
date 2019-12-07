@@ -29,4 +29,17 @@ describe('User Profile', () => {
             email: user.email,
         })
     })
+
+
+    test('should reject personal profile for guests', async () => {
+        let error
+        try {
+            await global.client().query({query: loggedInUser})
+        } catch (e) {
+            error = e
+        }
+
+        const expected = `This field is required and cannot be empty.`
+        expect(error.graphQLErrors[0].message.authorization[0]).toEqual(expected)
+    })
 })
