@@ -1,12 +1,13 @@
-PROJECT_DIR="$(
-  # shellcheck disable=SC2164
-  cd "$(dirname "$0")"
-  pwd -P
-)/.."
-
+docker-compose-test() {
+  docker-compose \
+    --project-directory "$(pwd)" \
+    --file ./docker/docker-compose.yml \
+    --file ./docker/docker-compose.test.yml \
+    "$@"
+}
 docker-compose-dev() {
   docker-compose \
-    --project-directory "${PROJECT_DIR}" \
+    --project-directory "$(pwd)" \
     --file ./docker/docker-compose.yml \
     --file ./docker/docker-compose.dev.yml \
     "$@"
@@ -14,18 +15,18 @@ docker-compose-dev() {
 
 docker-compose-production() {
   docker-compose \
-    --project-directory "${PROJECT_DIR}" \
+    --project-directory "$(pwd)" \
     --file ./docker/docker-compose.yml \
     --file ./docker/docker-compose.production.yml \
     "$@"
 }
 
 build-infrastructure-img() {
-  docker build --tag rdok/graphql-blog-api:infrastructure . -f "${PROJECT_DIR}/docker/api/Dockerfile-infrastructure"
+  docker build --tag rdok/graphql-blog-api:infrastructure . -f "./docker/api/Dockerfile-infrastructure"
 }
 
 build-prisma-img() {
-  docker build --tag rdok/graphql-blog-api:prisma . -f "${PROJECT_DIR}/docker/api/Dockerfile-prisma"
+  docker build --tag rdok/graphql-blog-api:prisma . -f "./docker/api/Dockerfile-prisma"
 }
 
 prisma-deploy() {

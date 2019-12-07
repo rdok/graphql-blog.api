@@ -76,6 +76,6 @@ describe('Comment', () => {
         setTimeout(async () => {
             await createComment() // assert does not listens to different post
             await createComment(null, {post})
-        }, 300)
+        }, 1000)
     })
 })

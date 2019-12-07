@@ -80,6 +80,6 @@ describe('Post', () => {
 
         setTimeout(async () => {
             await prisma.mutation.deletePost({where: {id: post.id}})
-        }, 300)
+        }, 1000)
     })
 })

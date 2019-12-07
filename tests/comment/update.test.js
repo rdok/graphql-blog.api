@@ -70,6 +70,6 @@ describe('Comment', () => {
                 mutation: updateComment,
                 variables: {id: comment.id, data: {text: 'any-value'}}
             })
-        }, 300)
+        }, 1000)
     })
 })

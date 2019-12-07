@@ -34,7 +34,6 @@ describe('Post', () => {
         await createPost({published: false})
         const post2 = await createPost({published: true})
 
-        // when i make a request to  create one
         const response = await global.client().query({query: posts})
 
         expect(response).toHaveProperty('data')

@@ -3,21 +3,36 @@ pipeline {
     triggers { cron('H H(18-19) * * *') }
     options { buildDiscarder( logRotator( numToKeepStr: '5' ) ) }
     environment {
-        VIRTUAL_PORT = '4000'
-        COMPOSE_PROJECT_NAME = 'graphql-blog-api'
-        NODE_ENV = 'dev'
+        VIRTUAL_PORT = '4001'
+        COMPOSE_PROJECT_NAME = 'graphql-blog-api-test'
+        NODE_ENV = 'test'
         JWT_AUTH_SECRET='secret'
         PRISMA_ENDPOINT='http://prisma:4466/default/test'
         PRISMA_SECRET='secret'
         POSTGRES_PASSWORD='secret'
     }
     stages {
+        stage('Build & Run') {
+           steps { ansiColor('xterm') {
+              sh '''#!/bin/bash
+                source ./docker/lib.sh
+                build-infrastructure-img
+                docker-compose-test build
+                docker-compose-test up --detach
+                ./jenkins/up-test.sh
+              '''
+        } } }
         stage('Test') {
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
-               docker network create nginx-proxy
-                  ./docker/test.sh production
-               docker network rm nginx-proxy
+                docker exec graphql-blog-api-test npm run test
+              '''
+        } } }
+        stage('Cleanup') {
+           steps { ansiColor('xterm') {
+              sh '''#!/bin/bash
+                source ./docker/lib.sh
+                docker-compose-test down
               '''
         } } }
         stage('Deploy') { steps { build 'graphql-blog/api' } }

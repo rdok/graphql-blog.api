@@ -61,6 +61,6 @@ describe('Comment', () => {
 
         setTimeout(async () => {
             await prisma.mutation.deleteComment({where: {id: comment.id}})
-        }, 300)
+        }, 1000)
     })
 })

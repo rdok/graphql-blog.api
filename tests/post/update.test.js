@@ -77,6 +77,6 @@ describe('Post', () => {
             } catch (e) {
                 console.log(JSON.stringify(e))
             }
-        }, 300)
+        }, 1000)
     })
 })

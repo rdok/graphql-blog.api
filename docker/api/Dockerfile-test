@@ -1,0 +1,8 @@
+# This mean to be used for developer needs.
+# For example, the `jest --watch` has the git dependency, which is installed
+# below.
+
+FROM rdok/graphql-blog-api:infrastructure
+
+COPY --chown=node:node . /home/node/app
+

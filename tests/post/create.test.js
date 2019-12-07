@@ -68,6 +68,6 @@ describe('Post', () => {
             // assert un-published posts do not generate event
             await createPostFactory({published: false})
             post = await createPostFactory()
-        }, 300)
+        }, 1000)
     })
 })
