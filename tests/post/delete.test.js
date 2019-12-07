@@ -1,8 +1,7 @@
 import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import createPost from "../factories/post";
-import {deletePost, subscribeToComments, subscribeToPosts} from "../utils/operations";
-import createComment from "../factories/comment";
+import {deletePost, subscribeToPosts} from "../utils/operations";
 
 describe('Post', () => {
 

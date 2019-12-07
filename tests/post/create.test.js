@@ -1,19 +1,32 @@
 import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import faker from "faker";
-import {createPost, subscribeToComments, subscribeToPosts} from "../utils/operations";
+import {createPost, loggedInUser, subscribeToComments, subscribeToPosts} from "../utils/operations";
 import {createPost as createPostFactory} from "../factories";
 
 describe('Post', () => {
 
+    const data = {
+        title: faker.lorem.words(),
+        body: faker.lorem.sentence(),
+        published: true,
+    }
+
+    test('should require authentication to create a post', async () => {
+        let error
+        try {
+            await global.client()
+                .mutate({mutation: createPost, variables: {data}})
+        } catch (e) {
+            error = e
+        }
+
+        const expected = `This field is required and cannot be empty.`
+        expect(error.graphQLErrors[0].message.authorization[0]).toEqual(expected)
+    })
+
     test('should create a post', async () => {
         const user = await createUser()
-
-        const data = {
-            title: faker.lorem.words(),
-            body: faker.lorem.sentence(),
-            published: true,
-        }
 
         const response = await global.client(user)
             .mutate({mutation: createPost, variables: {data: data}})
