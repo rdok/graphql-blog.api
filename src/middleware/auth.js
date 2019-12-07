@@ -24,6 +24,7 @@ Object.keys(Subscription).forEach((key) => {
     authMiddleware.Subscription[key] = auth
 })
 delete authMiddleware.Subscription.comment
+delete authMiddleware.Subscription.post
 
 async function auth(resolve, root, args, context, info) {
 

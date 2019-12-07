@@ -1,7 +1,8 @@
 import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import createPost from "../factories/post";
-import {deletePost} from "../utils/operations";
+import {deletePost, subscribeToComments, subscribeToPosts} from "../utils/operations";
+import createComment from "../factories/comment";
 
 describe('Post', () => {
 
@@ -64,5 +65,22 @@ describe('Post', () => {
 
         postExists = await prisma.exists.Post({id: post.id})
         expect(postExists).toBeTruthy()
+    })
+
+    test('should subscribe to deleted posts', async (done) => {
+        const post = await createPost()
+
+        global.client()
+            .subscribe({query: subscribeToPosts})
+            .subscribe({
+                next(response) {
+                    expect(response.data.post.mutation).toBe('DELETED')
+                    done()
+                }
+            });
+
+        setTimeout(async () => {
+            await prisma.mutation.deletePost({where: {id: post.id}})
+        }, 300)
     })
 })

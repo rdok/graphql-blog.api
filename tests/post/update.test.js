@@ -2,7 +2,8 @@ import createPost from '../factories/post'
 import createUser from "../factories/user";
 import prisma from "../../src/prisma";
 import faker from "faker";
-import {updatePost} from "../utils/operations";
+import {subscribeToComments, subscribeToPosts, updateComment, updatePost} from "../utils/operations";
+import {createComment} from "../factories";
 
 
 describe('Post', () => {
@@ -49,5 +50,33 @@ describe('Post', () => {
 
         const expected = `Could not find type 'posts' with 'id=${post.id}' and 'author.id=${user.id}`
         expect(error.graphQLErrors[0].message.id[0]).toEqual(expected)
+    })
+
+    test('should subscribe to updated post', async (done) => {
+        const author = await createUser()
+        const post = await createPost({published: true}, author)
+
+        global.client()
+            .subscribe({query: subscribeToPosts})
+            .subscribe({
+                next(response) {
+                    expect(response.data.post.mutation).toBe('UPDATED')
+                    expect(response.data.post.node.id).toBe(post.id)
+                    done()
+                }
+            });
+
+        // Wait for subscription connection
+        // https://www.udemy.com/course/graphql-bootcamp/learn/lecture/11917840#questions/5989800
+        setTimeout(async () => {
+            try {
+                await global.client(author).mutate({
+                    mutation: updatePost,
+                    variables: {id: post.id, data: {title: 'any-value'}}
+                })
+            } catch (e) {
+                console.log(JSON.stringify(e))
+            }
+        }, 300)
     })
 })

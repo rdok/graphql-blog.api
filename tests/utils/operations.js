@@ -2,15 +2,16 @@ import {gql} from "apollo-boost";
 
 const posts = gql`query { posts { id title body published author { id } } }`
 const deletePost = gql`mutation ($id:ID!){ deletePost(id:$id) { id } }`
-const createPost = gql`
-    mutation($data:CreatePostInput!){
-        createPost(data:$data)
-        { id title body published author { id } }
-    }`
-const updatePost = gql`
-    mutation ($id: ID!, $data:UpdatePostInput!) {
-        updatePost(id:$id data: $data) { id title body published }
-    }`
+const createPost = gql` mutation($data:CreatePostInput!){
+    createPost(data:$data)
+    { id title body published author { id } }
+}`
+const updatePost = gql` mutation ($id: ID!, $data:UpdatePostInput!) {
+    updatePost(id:$id data: $data) { id title body published }
+}`
+const subscribeToPosts = gql` subscription {
+    post { mutation node { id title body published author { id } }}
+}`
 
 const users = gql`query { users { name email } }`
 const loggedInUser = gql`query { loggedInUser { id name email } }`
@@ -41,7 +42,7 @@ const subscribeToComments = gql` subscription($postId:ID!) {
 }`
 
 export {
-    createPost, posts, deletePost, updatePost,
+    createPost, posts, deletePost, updatePost, subscribeToPosts,
     login, users, loggedInUser, createUser,
     comments, createComment, updateComment, deleteComment, subscribeToComments
 }

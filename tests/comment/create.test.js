@@ -43,17 +43,15 @@ describe('Comment', () => {
         const post = await createPost()
         const variables = {postId: post.id}
 
-        let client = global.client()
-        let subscribe = client
+        global.client()
             .subscribe({query: subscribeToComments, variables})
-
-        let subscription = subscribe.subscribe({
-            next(response) {
-                expect(response.data.comment.mutation).toBe('CREATED')
-                expect(response.data.comment.node.post.id).toBe(post.id)
-                done()
-            }
-        });
+            .subscribe({
+                next(response) {
+                    expect(response.data.comment.mutation).toBe('CREATED')
+                    expect(response.data.comment.node.post.id).toBe(post.id)
+                    done()
+                }
+            });
 
         // Wait for subscription connection
         // https://www.udemy.com/course/graphql-bootcamp/learn/lecture/11917840#questions/5989800
