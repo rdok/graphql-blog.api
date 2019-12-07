@@ -23,8 +23,11 @@ const createUser = gql` mutation($data:CreateUserInput!) {
 } `
 
 const createComment = gql` mutation($data:CreateCommentInput!) {
-    createComment(data: $data)
-    {  id text author { id } post { id } }
+    createComment(data: $data) {  id text author { id } post { id } }
+}`
+
+const updateComment = gql` mutation ($id: ID!, $data:UpdateCommentInput!) {
+    updateComment(id:$id data: $data) { id text author { id } post { id } }
 } `
 const comments = gql`query { comments { id text post { id } author { id } } }`
 const deleteComment = gql`mutation ($id:ID!){ deleteComment(id:$id) { id } }`
@@ -40,5 +43,5 @@ const subscribeToComments = gql` subscription($postId:ID!) {
 export {
     createPost, posts, deletePost, updatePost,
     login, users, loggedInUser, createUser,
-    createComment, comments, deleteComment, subscribeToComments
+    comments, createComment, updateComment, deleteComment, subscribeToComments
 }

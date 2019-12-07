@@ -4,7 +4,6 @@ import {
     subscribeToComments
 } from "../utils/operations";
 import {createPost, createUser, createComment} from "../factories";
-import faker from "faker";
 
 describe('Comment', () => {
 
@@ -59,6 +58,7 @@ describe('Comment', () => {
         // Wait for subscription connection
         // https://www.udemy.com/course/graphql-bootcamp/learn/lecture/11917840#questions/5989800
         setTimeout(async () => {
+            await createComment() // assert does not listens to different post
             await createComment(null, {post})
         }, 300)
     })

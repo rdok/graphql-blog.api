@@ -1,5 +1,5 @@
 import {comments} from '../utils/operations'
-import createComment from "../factories/comment";
+import {createComment} from "../factories";
 
 describe('Comment', () => {
     test('guests may read comments', async () => {
