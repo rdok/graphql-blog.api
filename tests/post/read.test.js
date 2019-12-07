@@ -7,7 +7,7 @@ describe('Post', () => {
         const user = await createUser()
         const post1 = await createPost({published: false}, user)
         const post2 = await createPost({published: true}, user)
-        const response = await global.httpClientFor(user)
+        const response = await global.client(user)
             .query({query: posts})
 
         expect(response.data.posts).toEqual([
@@ -35,7 +35,7 @@ describe('Post', () => {
         const post2 = await createPost({published: true})
 
         // when i make a request to  create one
-        const response = await global.httpClient.query({query: posts})
+        const response = await global.client().query({query: posts})
 
         expect(response).toHaveProperty('data')
         expect(response.data).toHaveProperty('posts')

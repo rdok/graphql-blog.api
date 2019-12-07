@@ -17,7 +17,7 @@ describe('Post', () => {
             published: true,
         }
 
-        const response = await global.httpClientFor(user).mutate({
+        const response = await global.client(user).mutate({
             mutation: updatePost,
             variables: {id: post.id, data: data}
         })
@@ -39,7 +39,7 @@ describe('Post', () => {
 
         let error
         try {
-            await global.httpClientFor(user).mutate({
+            await global.client(user).mutate({
                 mutation: updatePost,
                 variables
             })

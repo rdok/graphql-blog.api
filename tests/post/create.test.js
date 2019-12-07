@@ -14,7 +14,7 @@ describe('Post', () => {
             published: true,
         }
 
-        const response = await global.httpClientFor(user)
+        const response = await global.client(user)
             .mutate({mutation: createPost, variables: {data: data}})
 
         expect(response).toEqual({

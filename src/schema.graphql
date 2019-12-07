@@ -70,7 +70,7 @@ type Subscription {
 }
 
 input SubscribeToCommentInput {
-    postId: ID
+    postId: ID!
     mutationIn: [SubscriptionMutationType]
 }
 

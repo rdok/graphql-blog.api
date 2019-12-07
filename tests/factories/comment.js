@@ -15,5 +15,5 @@ export default async function createComment(data, relations = {}) {
         author: {connect: {id: author.id}},
     }, data)
 
-    return prisma.mutation.createComment({data}, info)
+    return await prisma.mutation.createComment({data}, info)
 }

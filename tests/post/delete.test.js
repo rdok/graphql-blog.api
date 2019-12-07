@@ -12,7 +12,7 @@ describe('Post', () => {
         let postExists = await prisma.exists.Post({id: post.id})
         expect(postExists).toBeTruthy()
 
-        const response = await global.httpClientFor(user)
+        const response = await global.client(user)
             .mutate({mutation: deletePost, variables: {id: post.id}})
 
         expect(response).toEqual({
@@ -31,7 +31,7 @@ describe('Post', () => {
 
         let error
         try {
-            await global.httpClient
+            await global.client()
                 .mutate({mutation: deletePost, variables: {id: post.id}})
         } catch (e) {
             error = e
@@ -53,7 +53,7 @@ describe('Post', () => {
 
         let error
         try {
-            await global.httpClientFor(user)
+            await global.client(user)
                 .mutate({mutation: deletePost, variables: {id: post.id}})
         } catch (e) {
             error = e

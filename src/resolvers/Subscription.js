@@ -4,12 +4,11 @@ const Subscription = {
             let subscriptionInput = {where: {}}
 
             await validator.validate(data, {
-                postId: 'exists:Post,id',
+                postId: 'required|exists:Post,id',
             })
 
-            if (data.postId) {
-                subscriptionInput.where.node = {post: {id: data.postId}}
-            }
+            subscriptionInput.where.node = {post: {id: data.postId}}
+
             if (data.mutationIn) {
                 subscriptionInput.where.mutation_in = data.mutationIn
             }

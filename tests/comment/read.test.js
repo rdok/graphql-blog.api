@@ -6,7 +6,7 @@ describe('Comment', () => {
         const comment1 = await createComment()
         const comment2 = await createComment()
 
-        const response = await global.httpClient.query({query: comments})
+        const response = await global.client().query({query: comments})
 
         expect(response.data.comments).toEqual([
             {

@@ -11,7 +11,7 @@ describe('Comment', () => {
         let commentExists = await prisma.exists.Comment({id: comment.id})
         expect(commentExists).toBeTruthy()
 
-        const response = await global.httpClientFor(user)
+        const response = await global.client(user)
             .mutate({mutation: deleteComment, variables: {id: comment.id}})
 
         expect(response).toEqual({
@@ -31,7 +31,7 @@ describe('Comment', () => {
 
         let error
         try {
-            await global.httpClientFor(user)
+            await global.client(user)
                 .mutate({mutation: deleteComment, variables: {id: comment.id}})
         } catch (e) {
             error = e

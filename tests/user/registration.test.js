@@ -16,7 +16,7 @@ describe('User Registration', () => {
         let user = await prisma.query.user({where: {email: 'expected@email.test'}})
         expect(user).toBeNull()
 
-        const response = await global.httpClient
+        const response = await global.client()
             .mutate({mutation: createUserMutation, variables})
 
         expect(response).toHaveProperty('data')
@@ -46,7 +46,7 @@ describe('User Registration', () => {
 
         let error
         try {
-            await global.httpClient
+            await global.client()
                 .mutate({mutation: createUserMutation, variables})
         } catch (e) {
             error = e
@@ -74,7 +74,7 @@ describe('User Registration', () => {
 
         let error
         try {
-            await global.httpClient
+            await global.client()
                 .mutate({mutation: createUserMutation, variables})
         } catch (e) {
             error = e

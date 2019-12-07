@@ -13,7 +13,7 @@ describe('User Auth', () => {
         const variables = {data: {email: user.email, password}}
 
         try {
-            await global.httpClient.mutate({mutation: login, variables});
+            await global.client().mutate({mutation: login, variables});
         } catch (e) {
             error = e
         }
@@ -29,7 +29,7 @@ describe('User Auth', () => {
         const user = await createUser({password})
         const variables = {data: {email: user.email, password}}
 
-        const response = await global.httpClient
+        const response = await global.client()
             .mutate({mutation: login, variables})
 
         expect(response).toHaveProperty('data')

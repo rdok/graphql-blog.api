@@ -6,7 +6,7 @@ describe('User Profile', () => {
         const user1 = await createUser()
         const user2 = await createUser()
 
-        const response = await global.httpClient.query({query: users})
+        const response = await global.client().query({query: users})
 
         expect(response).toHaveProperty('data')
         expect(response.data).toHaveProperty('users')
@@ -19,7 +19,7 @@ describe('User Profile', () => {
 
     test('should fetch private user profile', async () => {
         const user = await createUser()
-        const response = await global.httpClientFor(user)
+        const response = await global.client(user)
             .query({query: loggedInUser})
 
         expect(response.data.loggedInUser).toEqual({
