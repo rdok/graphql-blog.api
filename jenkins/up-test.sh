@@ -2,8 +2,6 @@
 
 source "./docker/lib.sh"
 
-docker-compose-test up --detach
-
 containerName='graphql-blog-api-test'
 stateStatus=$(docker inspect -f '{{.State.Status}}' $containerName)
 until [ "$stateStatus" == "running" ]; do sleep 1; done

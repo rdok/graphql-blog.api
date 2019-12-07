@@ -1,7 +1,10 @@
 pipeline {
     agent { label 'linux' }
     triggers { cron('H H(18-19) * * *') }
-    options { buildDiscarder( logRotator( numToKeepStr: '5' ) ) }
+    options {
+        buildDiscarder( logRotator( numToKeepStr: '5' ) )
+        disableConcurrentBuilds()
+    }
     environment {
         VIRTUAL_PORT = '4001'
         COMPOSE_PROJECT_NAME = 'graphql-blog-api-test'
@@ -25,26 +28,40 @@ pipeline {
         stage('Test') {
            steps { ansiColor('xterm') {
               sh '''#!/bin/bash
-                docker exec graphql-blog-api-test npm run test
+                docker exec graphql-blog-api-test npm run test-ci
+                docker cp graphql-blog-api-test:/home/node/app/report .
               '''
         } } }
-        stage('Cleanup') {
-           steps { ansiColor('xterm') {
-              sh '''#!/bin/bash
-                source ./docker/lib.sh
-                docker-compose-test down
-              '''
-        } } }
-        stage('Deploy') { steps { build 'graphql-blog/api' } }
+        stage('Trigger Deployment') {
+            steps {
+                build job: 'graphql-blog/api', wait: false
+            }
+        }
     }
     post {
         failure {
             slackSend color: '#FF0000',
-            message: "@here Failed: <${env.BUILD_URL}console | ${env.JOB_NAME}#${env.BUILD_NUMBER}>"
+                message: "@here Failed: <${env.BUILD_URL}console | ${env.JOB_NAME}#${env.BUILD_NUMBER}>"
         }
         fixed {
             slackSend color: 'good',
-            message: "@here Fixed: <${env.BUILD_URL}console | ${env.JOB_NAME}#${env.BUILD_NUMBER}>"
+                message: "@here Fixed: <${env.BUILD_URL}console | ${env.JOB_NAME}#${env.BUILD_NUMBER}>"
+        }
+        always {
+            ansiColor('xterm') {
+                sh '''#!/bin/bash
+                    source ./docker/lib.sh
+                    docker-compose-test down
+                '''
+            }
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: false,
+                reportFiles: 'index.html',
+                reportName: 'Coverage Report',
+                reportDir: 'report/lcov-report/'
+            ])
         }
     }
 }

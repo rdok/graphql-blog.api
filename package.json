@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js --exec babel-node --ext js,graphql",
     "test": "env-cmd -f ./.env.testing jest --runInBand --forceExit",
+    "test-ci": "env-cmd -f ./.env.testing jest --runInBand --forceExit --coverage --coverageDirectory='./report'",
     "test-watch": "env-cmd -f ./.env.testing jest --watch --runInBand",
     "build": "babel ./src --out-dir ./dist --copy-files",
     "production": "node dist/index.js",

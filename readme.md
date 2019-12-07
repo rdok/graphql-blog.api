@@ -1,6 +1,8 @@
 # Graphql-Blog.API 
-[![Build Status](https://jenkins.rdok.dev/buildStatus/icon?job=graphql-blog%2Fapi)](https://jenkins.rdok.dev/view/Training/job/graphql-blog/job/api/)
+API Production [![Build Status](https://jenkins.rdok.dev/buildStatus/icon?job=graphql-blog%2Fapi)](https://jenkins.rdok.dev/view/Training/job/graphql-blog/job/api/)
 > Dev project hands-on GraphQL practise and showcasing the full pipeline, from develop to production. 
+
+API Test [![Build Status](https://jenkins.rdok.dev/buildStatus/icon?job=graphql-blog%2Fapi-test)](https://jenkins.rdok.dev/view/Training/job/graphql-blog/job/api-test/)
 
 - [GraphQL Yoga](https://github.com/prisma-labs/graphql-yoga)
 - [Prisma Cloud as ORM](https://www.prisma.io/cloud)
@@ -11,9 +13,6 @@
 - [Custom Docker Images](https://hub.docker.com/repository/docker/rdok/prisma-cli)
 - [Udemy - The Modern GraphQL Bootcamp](https://www.udemy.com/course/graphql-bootcamp/)
 
-
-## Production
-CI/CD - [Jenkins](https://github.com/rdok/graphql-blog.api/blob/master/Jenkinsfile)
 
 ## Development
 Copy .env.example to .env, and modify as per your needs.
