@@ -70,6 +70,6 @@
     "jsonwebtoken": "^8.5.1",
     "prisma": "^1.34.10",
     "prisma-binding": "^2.3.16",
-    "validator": "^12.1.0"
+    "validator": "^13.7.0"
   }
 }
